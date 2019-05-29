@@ -24,8 +24,8 @@ class Node:
     def __add__(self, node, key_x, key_y, value):
         if key_x <= node.x and key_y >= node.y:
             if node.Q_11 is None:
-               node.Q_11 = Node(key_x, key_y, value)
-               return
+                node.Q_11 = Node(key_x, key_y, value)
+                return
             self.__add__(node.Q_11, key_x, key_y, value)
         elif key_x >= node.x and key_y >= node.y:
             if node.Q_12 is None:
@@ -43,6 +43,24 @@ class Node:
                 return
             node.__add__(node.Q_22, key_x, key_y, value)
 
+    def execute(self,funct):
+         pass
+
+    def iterate(self):
+        if self.Q_11 is not None:
+            self.Q_11.iterate()
+        print(str(self.x) + "," + str(self.y) + "- value" + self.value)
+        self.execute(None)
+        if self.Q_21 is not None:
+            self.Q_21.iterate()
+
+
+        if self.Q_12 is not None:
+            self.Q_12.iterate()
+        if self.Q_22 is not None:
+            self.Q_22.iterate()
+
+
 
 
 
@@ -57,14 +75,21 @@ class Tree:
         else:
             self.root.__add__(self.root, key_x, key_y, value)
 
-
+    def print(self):
+       self.root.iterate()
 
 
 t = Tree()
 
-t.add_element(key_x=0,key_y=0,value="First 0 0 ")
-t.add_element(1,1,"First 1 1 ")
-t.add_element(2,3,"First 2 3 ")
-t.add_element(-1,2,"First -1 2  ")
-t.add_element(-1,1,"First - 1 1 ")
-print('Stop')
+t.add_element(key_x=0, key_y=0, value="First 0 0 ")
+t.add_element(-1, 2, "-1 2  ")
+t.add_element(-1, 1, " - 1 1 ")
+t.add_element(-1, -1, " - 1 1 ")
+t.add_element(-2, -3, " - 1 1 ")
+t.add_element(-2, -2.5, " - 1 1 ")
+t.add_element(1, 1, "1 1 ")
+t.add_element(2, 3, "2 3 ")
+
+
+t.print()
+
