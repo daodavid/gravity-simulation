@@ -1,5 +1,7 @@
 """
 author : Daodeiv
+Tree codes - ALGORITHM
+https://www.geeksforgeeks.org/quad-tree/
 """
 
 
