@@ -47,9 +47,9 @@ class Body:
     def get_mass(self):
         return self.mass
 
-    def set_coord(self,x,y):
-        self.x1=x
-        self.x2=y
+    def set_coord(self, x, y):
+        self.x1 = x
+        self.x2 = y
         self.x_args.append(x)
         self.y_args.append(y)
 
@@ -58,7 +58,6 @@ class Body:
         self.v2 = v2
         self.v1_args.append(v1)
         self.v2_args.append(v2)
-
 
     def get_init_cordinates(self):
         return np.array([self.x0_1, self.x0_2])
@@ -88,34 +87,70 @@ class NodeBody:
         self.Q_21 = None  # Quadrant 21
         self.Q_22 = None  # Quadrant 22
 
-    def __add__(self, node):
-        if key_x <= node.body.x and key_y >= node.y:
+    def __add__(self, node, body):
+        if body.x1 <= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_11 is None:
-                node.Q_11 = Node(key_x, key_y, value)
+                node.Q_11 = NodeBody(body)
                 return
-            self.__add__(node.Q_11, key_x, key_y, value)
-        elif key_x >= node.x and key_y >= node.y:
+            self.__add__(node.Q_11, body)
+        elif body.x1 >= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_12 is None:
-                node.Q_12 = Node(key_x, key_y, value)
+                node.Q_12 = NodeBody(body)
                 return
-            self.__add__(node.Q_12, key_x, key_y, value)
-        elif key_x <= node.x and key_y <= node.y:
+            self.__add__(node.Q_12, body)
+        elif body.x1 <= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_21 is None:
-                node.Q_21 = Node(key_x, key_y, value)
+                node.Q_21 = NodeBody(body)
                 return
-            self.__add__(node.Q_21, key_x, key_y, value)
-        elif key_x >= node.x and key_y <= node.y:
+            self.__add__(node.Q_11, body)
+        elif body.x1 >= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_22 is None:
-                node.Q_22 = Node(key_x, key_y, value)
+                node.Q_22 = NodeBody(body)
                 return
-            node.__add__(node.Q_22, key_x, key_y, value)
+            self.__add__(node.Q_11, body)
 
     def execute(self, funct):
         pass
 
+    def iterate(self):
+        if self.Q_11 is not None:
+            self.Q_11.iterate()
+        print(str(self.x) + "," + str(self.y) + "- value" + self.value)
+        self.execute(None)
+        if self.Q_21 is not None:
+            self.Q_21.iterate()
 
-class Gravity:
-    pass
+        if self.Q_12 is not None:
+            self.Q_12.iterate()
+        if self.Q_22 is not None:
+            self.Q_22.iterate()
+
+
+class TreeBody:
+    def __init__(self):
+        self.root = None;
+
+    def add_element(self, body):
+        if self.root is None:
+            self.root = NodeBody(body)
+
+        else:
+            self.root.__add__(self.root, body)
+
+    def print(self):
+        self.root.iterate()
+
+
+class Ground:
+    def __init__(self):
+        self.bodies = []
+        tree = TreeBody()
+
+    def add_body(self, body):
+        self.bodies.append(body)
+        self.tree.add_element(body)
+
+
 
 
 ###https://www.maths.tcd.ie/~btyrrel/nbody.pdf
