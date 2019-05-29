@@ -51,7 +51,7 @@ class Node:
     def iterate(self):
         if self.Q_11 is not None:
             self.Q_11.iterate()
-        print(str(self.x) + "," + str(self.y) + "- value" + self.value)
+
         self.execute(None)
         if self.Q_21 is not None:
             self.Q_21.iterate()

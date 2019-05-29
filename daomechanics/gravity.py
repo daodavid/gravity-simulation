@@ -71,6 +71,9 @@ class Body:
     def set_y_args(self):
         return self.y_args
 
+    def __str__(self):
+        return  "[" +str( self.x1) + "," + str(self.x2) + "]" + "- mass : " + str(self.mass)
+
 
 class NodeBody:
     def __init__(self, body, range=[4, 4]):
@@ -109,14 +112,19 @@ class NodeBody:
                 return
             self.__add__(node.Q_11, body)
 
-    def execute(self, funct):
+    def compute_center_of_mass(self):
+        """
+         this will comute center mmass for each node
+        :return:
+        """
         pass
 
     def iterate(self):
         if self.Q_11 is not None:
             self.Q_11.iterate()
-        print(str(self.x) + "," + str(self.y) + "- value" + self.value)
+        print(self.body.__str__())
         self.execute(None)
+
         if self.Q_21 is not None:
             self.Q_21.iterate()
 
@@ -141,18 +149,53 @@ class TreeBody:
         self.root.iterate()
 
 
+
 class Ground:
     def __init__(self):
         self.bodies = []
-        tree = TreeBody()
+        self.tree = TreeBody()
 
     def add_body(self, body):
         self.bodies.append(body)
         self.tree.add_element(body)
+    def print(self):
+        self.tree.print()
 
 
+"""
+Force Calculation 
+d - Size of box
+r - Partica distance for nodes center of mass
 
+k = d/r
+
+If θ lies below a certain threshold the force 
+can be approximated by inserting the quadrant nodes 
+mass and its center of mass in the law of gravity. 
+The child nodes don't have to be summed up separately.
+ A reasonable relation is k < 1. If θ
+  is larger than the threshold the quadrants effect can't be 
+  approximated and all of its child nodes have to be tested again. The iteration stops only after all nodes have been tested. 
+  The worst case scenario is having to test all nodes without finding any node that meets the MAC. In such a case the result 
+  is similar to summing up all mutual particle forces (θ=0). 
+  The iteration depth can be finetuned by adjusting θ. Animation 1 illustrates 
+the influence of θ on the number of force computations
+
+k = d/r
+
+"""
 
 ###https://www.maths.tcd.ie/~btyrrel/nbody.pdf
+### http://algorithm-interest-group.me/assets/slides/barnes_hut.pdf
+### https://www.cs.vu.nl/ibis/papers/nijhuis_barnes_2004.pdf
+##http://www.cs.hut.fi/~ctl/NBody.pdf
 def center_mas():
     pass
+
+
+g = Ground()
+g.add_body(Body(32,0,0,1,1))
+g.add_body(Body(32,1,1,1,1))
+g.add_body(Body(32,2,3,1,1))
+g.add_body(Body(32,-1,1,1,1))
+g.print()
