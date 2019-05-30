@@ -150,6 +150,32 @@ class TreeBody:
 
 
 
+    def compute_center_mass_node(self,node):
+        """
+
+        :param node: nodeBody
+        :return: center of mass as sum of all bodyes with root given node
+        """
+        pass
+
+    def compare(self,distance,node):
+        """
+
+        comparing W/R
+        where W - width of the region of node
+        R distance between body and node
+        :param distance:
+        :param node:
+        :return:
+        """
+        pass
+
+    def calculate_velocity(self,node):
+        pass
+
+
+
+
 class Ground:
     def __init__(self):
         self.bodies = []
@@ -165,7 +191,7 @@ class Ground:
 """
 Force Calculation 
 d - Size of box
-r - Partica distance for nodes center of mass
+r - Partical distance for nodes center of mass
 
 k = d/r
 
