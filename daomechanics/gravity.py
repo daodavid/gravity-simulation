@@ -33,6 +33,7 @@ end
 
 
 class Body:
+    ID = 0
     def __init__(self, mass, x0, y0, v0_1, v0_2):
         self.mass = mass
         self.x1 = x0
@@ -43,6 +44,8 @@ class Body:
         self.y_args = [y0]
         self.v1_args = [v0_1]
         self.v2_args = [v0_2]
+        Body.ID += 1
+        self.ID = Body.ID
 
     def get_mass(self):
         return self.mass
@@ -71,6 +74,9 @@ class Body:
     def set_y_args(self):
         return self.y_args
 
+    def calculate_velocity(self,body):
+        print('Calculation beween ids' + str(self.ID) + " and  " + str(body.ID))
+
     def increment_velocity(self, R):
         pass
 
@@ -81,10 +87,13 @@ class Body:
 class NodeBody:
     criteria = 0.5
 
+
     def __init__(self, body, range=[4, 4]):
+
         self.body = body
         self.width_node = 0
         self.size_node = 0
+
         """
          Quadrants
         |11|12' 
@@ -151,6 +160,7 @@ class NodeBody:
         :param node:
         :return:
         """
+        return False
         d = self.get_distance(node2)
         w = node2.get_width_note()
 
@@ -225,23 +235,32 @@ class TreeBody:
             if node.use_approximation(nodes[i]):
                 pass
             else :
-                #calculate force
+                node.body.calculate_velocity(nodes[i].body)
                 self.calculate_V(node,nodes[i].children)
+        if node.body.ID!=1 and len(node.children)>0:
+          self.calculate_V(node,node.children)
 
-        self.calculate_V(node,node.children)
 
     def calculate_Roo(self,node):
         nodes = self.root.children
+        if node.body.ID !=1 :
+            node.body.calculate_velocity(self.root.body)
+
         for i in range(len(nodes)):
             if node.use_approximation(nodes[i]):
                 #caolculate with center of mass
                 pass
             else :
-                #caolculate force node with nodes[i]
+                if node.body.ID==nodes[i].body.ID:
+                  continue
+                node.body.calculate_velocity(nodes[i].body)
                 self.calculate_V(node,nodes[i].children)
 
         for n in node.children:
             self.calculate_Roo(n)
+
+    def calculate(self):
+        self.calculate_Roo(self.root)
 
 
 
@@ -255,6 +274,9 @@ class Ground:
     def add_body(self, body):
         self.bodies.append(body)
         self.tree.add_element(body)
+
+    def calculate(self):
+        self.tree.calculate()
 
     def print(self):
         self.tree.print()
@@ -291,12 +313,12 @@ k = d/r
 def center_mas():
     pass
 
-# g = Ground()
-# g.add_body(Body(32, 0, 0, 1, 1))
-# g.add_body(Body(32, 1, 1, 1, 1))
-# g.add_body(Body(32, 2, 3, 1, 1))
-# g.add_body(Body(32, -1, 1, 1, 1))
-# g.print()
+g = Ground()
+g.add_body(Body(32, 0, 0, 1, 1))
+g.add_body(Body(32, 1, 1, 1, 1))
+g.add_body(Body(32, 2, 3, 1, 1))
+g.add_body(Body(32, -1, 1, 1, 1))
+g.calculate()
 
 # for n in range(10):
 #     for m in range(n + 1, 10):
