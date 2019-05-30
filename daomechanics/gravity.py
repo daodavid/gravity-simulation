@@ -72,12 +72,16 @@ class Body:
         return self.y_args
 
     def __str__(self):
-        return  "[" +str( self.x1) + "," + str(self.x2) + "]" + "- mass : " + str(self.mass)
+        return "[" + str(self.x1) + "," + str(self.x2) + "]" + "- mass : " + str(self.mass)
 
 
 class NodeBody:
+    criteria = 0.5
+
     def __init__(self, body, range=[4, 4]):
         self.body = body
+        self.width_node = 0
+        self.size_node = 0
         """
          Quadrants
         |11|12' 
@@ -89,28 +93,96 @@ class NodeBody:
         self.Q_12 = None  # Quadrant 12
         self.Q_21 = None  # Quadrant 21
         self.Q_22 = None  # Quadrant 22
+        self.children = []  # helper lsit wich contains all nodes described above
 
     def __add__(self, node, body):
         if body.x1 <= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_11 is None:
                 node.Q_11 = NodeBody(body)
+                self.children.append(node.Q_11)
                 return
             self.__add__(node.Q_11, body)
         elif body.x1 >= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_12 is None:
                 node.Q_12 = NodeBody(body)
+                self.children.append(node.Q_12)
                 return
             self.__add__(node.Q_12, body)
         elif body.x1 <= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_21 is None:
                 node.Q_21 = NodeBody(body)
+                self.children.append(node.Q_21)
                 return
             self.__add__(node.Q_11, body)
         elif body.x1 >= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_22 is None:
                 node.Q_22 = NodeBody(body)
+                self.children.append(node.Q_22)
                 return
             self.__add__(node.Q_11, body)
+
+    def get_distance(self, node1, node2):
+        dx = node1.body.x1 - node2.body.x2
+        dy = node1.body.x2 - node2.body.x2
+
+        delta = np.sqrt(dx ** 2 + dy * 2)
+        return delta
+
+    def get_width_note(self):
+        N = self.children
+        i = 0
+        width = 0
+        for i in range(len(N)):
+            width += self.get_dencity(self, N[i])
+            i += 1
+
+        return width / i
+
+    def use_aproximation(self, node1, node2):
+        """
+
+        comparing W/R
+        where W - width of the region of node
+        R distance between body and node
+        :param distance:
+        :param node:
+        :return:
+        """
+        d = self.get_distance(node1, node2)
+        w = node2.get_width_note()
+
+        if (w / d) < NodeBody.criteria:
+            return True
+        else:
+            return False
+
+    def get_radius_vector_mass_node(self):
+        """
+        That method returns np.array(sum of x1_children  , sum x2_children,sum M_children)
+
+        :return:
+        """
+        N = self.children
+        result = np.array([self.body.x1, self.body.x2, self.body.mass])
+        M = 0
+        for i in range(len(N)):
+            result = result + N[i].get_radius_vector_mass_node()
+
+        return result
+
+    def compute_center_mass_node(self, node):
+        """
+
+        :param node: nodeBody
+        :return: center of mass as sum of all bodyes with root given node
+        """
+
+        c = node.get_radius_vector_mass_node
+
+        return np.array([c[0]/c[2],c[1]/c[2]])
+
+    def calculate_velocity(self, node):
+        pass
 
     def compute_center_of_mass(self):
         """
@@ -149,33 +221,6 @@ class TreeBody:
         self.root.iterate()
 
 
-
-    def compute_center_mass_node(self,node):
-        """
-
-        :param node: nodeBody
-        :return: center of mass as sum of all bodyes with root given node
-        """
-        pass
-
-    def compare(self,distance,node):
-        """
-
-        comparing W/R
-        where W - width of the region of node
-        R distance between body and node
-        :param distance:
-        :param node:
-        :return:
-        """
-        pass
-
-    def calculate_velocity(self,node):
-        pass
-
-
-
-
 class Ground:
     def __init__(self):
         self.bodies = []
@@ -184,6 +229,7 @@ class Ground:
     def add_body(self, body):
         self.bodies.append(body)
         self.tree.add_element(body)
+
     def print(self):
         self.tree.print()
 
@@ -211,6 +257,7 @@ k = d/r
 
 """
 
+
 ###https://www.maths.tcd.ie/~btyrrel/nbody.pdf
 ### http://algorithm-interest-group.me/assets/slides/barnes_hut.pdf
 ### https://www.cs.vu.nl/ibis/papers/nijhuis_barnes_2004.pdf
@@ -220,8 +267,8 @@ def center_mas():
 
 
 g = Ground()
-g.add_body(Body(32,0,0,1,1))
-g.add_body(Body(32,1,1,1,1))
-g.add_body(Body(32,2,3,1,1))
-g.add_body(Body(32,-1,1,1,1))
+g.add_body(Body(32, 0, 0, 1, 1))
+g.add_body(Body(32, 1, 1, 1, 1))
+g.add_body(Body(32, 2, 3, 1, 1))
+g.add_body(Body(32, -1, 1, 1, 1))
 g.print()
