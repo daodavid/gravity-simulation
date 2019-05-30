@@ -163,7 +163,7 @@ class NodeBody:
         :return:
         """
         N = self.children
-        result = np.array([self.body.x1, self.body.x2, self.body.mass])
+        result = np.array([self.body.x1*self.body.mass, self.body.x2*self.body.mass, self.body.mass])
         M = 0
         for i in range(len(N)):
             result = result + N[i].get_radius_vector_mass_node()
@@ -172,14 +172,20 @@ class NodeBody:
 
     def compute_center_mass_node(self, node):
         """
-
+        R = Sum (x_i*m_iE1 + y_i*mi*E2)/M
+        where M = sum m_i
         :param node: nodeBody
         :return: center of mass as sum of all bodyes with root given node
         """
 
         c = node.get_radius_vector_mass_node
+        sum_x = c[0]  #sum of x_i*m_i
+        sum_y = c[1]  #sum of y_i*m_i
+        sum_m = c[0]  #sum of m_i
+        x_coord = sum_x/sum_m
+        y_coord = sum_y/sum_m
 
-        return np.array([c[0]/c[2],c[1]/c[2]])
+        return np.array([x_coord,y_coord])
 
     def calculate_velocity(self, node):
         pass
