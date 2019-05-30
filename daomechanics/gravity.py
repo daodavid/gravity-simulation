@@ -71,6 +71,9 @@ class Body:
     def set_y_args(self):
         return self.y_args
 
+    def increment_velocity(self, R):
+        pass
+
     def __str__(self):
         return "[" + str(self.x1) + "," + str(self.x2) + "]" + "- mass : " + str(self.mass)
 
@@ -121,9 +124,9 @@ class NodeBody:
                 return
             self.__add__(node.Q_11, body)
 
-    def get_distance(self, node1, node2):
-        dx = node1.body.x1 - node2.body.x2
-        dy = node1.body.x2 - node2.body.x2
+    def get_distance(self, node2):
+        dx = self.body.x1 - node2.body.x2
+        dy = self.body.x2 - node2.body.x2
 
         delta = np.sqrt(dx ** 2 + dy * 2)
         return delta
@@ -138,7 +141,7 @@ class NodeBody:
 
         return width / i
 
-    def use_aproximation(self, node1, node2):
+    def use_approximation(self, node2):
         """
 
         comparing W/R
@@ -148,7 +151,7 @@ class NodeBody:
         :param node:
         :return:
         """
-        d = self.get_distance(node1, node2)
+        d = self.get_distance(node2)
         w = node2.get_width_note()
 
         if (w / d) < NodeBody.criteria:
@@ -163,7 +166,7 @@ class NodeBody:
         :return:
         """
         N = self.children
-        result = np.array([self.body.x1*self.body.mass, self.body.x2*self.body.mass, self.body.mass])
+        result = np.array([self.body.x1 * self.body.mass, self.body.x2 * self.body.mass, self.body.mass])
         M = 0
         for i in range(len(N)):
             result = result + N[i].get_radius_vector_mass_node()
@@ -179,23 +182,13 @@ class NodeBody:
         """
 
         c = node.get_radius_vector_mass_node
-        sum_x = c[0]  #sum of x_i*m_i
-        sum_y = c[1]  #sum of y_i*m_i
-        sum_m = c[0]  #sum of m_i
-        x_coord = sum_x/sum_m
-        y_coord = sum_y/sum_m
+        sum_x = c[0]  # sum of x_i*m_i
+        sum_y = c[1]  # sum of y_i*m_i
+        sum_m = c[0]  # sum of m_i
+        x_coord = sum_x / sum_m
+        y_coord = sum_y / sum_m
 
-        return np.array([x_coord,y_coord])
-
-    def calculate_velocity(self, node):
-        pass
-
-    def compute_center_of_mass(self):
-        """
-         this will comute center mmass for each node
-        :return:
-        """
-        pass
+        return np.array([x_coord, y_coord])
 
     def iterate(self):
         if self.Q_11 is not None:
@@ -225,6 +218,33 @@ class TreeBody:
 
     def print(self):
         self.root.iterate()
+
+    def calculate_V(self,node,nodes):
+
+        for i in range(len(nodes)):
+            if node.use_approximation(nodes[i]):
+                pass
+            else :
+                #calculate force
+                self.calculate_V(node,nodes[i].children)
+
+        self.calculate_V(node,node.children)
+
+    def calculate_Roo(self,node):
+        nodes = self.root.children
+        for i in range(len(nodes)):
+            if node.use_approximation(nodes[i]):
+                #caolculate with center of mass
+                pass
+            else :
+                #caolculate force node with nodes[i]
+                self.calculate_V(node,nodes[i].children)
+
+        for n in node.children:
+            self.calculate_Roo(n)
+
+
+
 
 
 class Ground:
@@ -271,10 +291,13 @@ k = d/r
 def center_mas():
     pass
 
+# g = Ground()
+# g.add_body(Body(32, 0, 0, 1, 1))
+# g.add_body(Body(32, 1, 1, 1, 1))
+# g.add_body(Body(32, 2, 3, 1, 1))
+# g.add_body(Body(32, -1, 1, 1, 1))
+# g.print()
 
-g = Ground()
-g.add_body(Body(32, 0, 0, 1, 1))
-g.add_body(Body(32, 1, 1, 1, 1))
-g.add_body(Body(32, 2, 3, 1, 1))
-g.add_body(Body(32, -1, 1, 1, 1))
-g.print()
+# for n in range(10):
+#     for m in range(n + 1, 10):
+#         print("(n,m)" + str(n)+ " ,"+str(m))
