@@ -122,28 +122,28 @@ class NodeBody:
                 self.children.append(node.Q_11)
                 self.__set_width_node(node.Q_11)
                 return
-            self.__add__(node.Q_11, body)
+            node.Q_11.__add__(node.Q_11, body)
         elif body.x1 >= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_12 is None:
                 node.Q_12 = NodeBody(body)
                 self.children.append(node.Q_12)
                 self.__set_width_node(node.Q_12)
                 return
-            self.__add__(node.Q_12, body)
+            node.Q_12 .__add__(node.Q_12, body)
         elif body.x1 <= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_21 is None:
                 node.Q_21 = NodeBody(body)
                 self.children.append(node.Q_21)
-                self.__set_width_node(node.Q_11)
+                self.__set_width_node(node.Q_21)
                 return
-            self.__add__(node.Q_11, body)
+            node.Q_21.__add__(node.Q_21, body)
         elif body.x1 >= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_22 is None:
                 node.Q_22 = NodeBody(body)
                 self.children.append(node.Q_22)
-                self.__set_width_node(node.Q_11)
+                self.__set_width_node(node.Q_22)
                 return
-            self.__add__(node.Q_11, body)
+            node.Q_22 .__add__(node.Q_22, body)
 
     def get_distance(self, node2):
         dx = self.body.x1 - node2.body.x2
@@ -166,10 +166,13 @@ class NodeBody:
         c = self.get_radius_vector_mass_node()
         sum_x = c[0]  # sum of x_i*m_i
         sum_y = c[1]  # sum of y_i*m_i
-        sum_m = c[0]  # sum of m_i
+        sum_m = c[2]  # sum of m_i
         x_coord = sum_x / sum_m
         y_coord = sum_y / sum_m
         self.cennter_mass = np.array([x_coord, y_coord])
+        if self.body.ID==1:
+            print("center of mass of root:!!!!")
+            print(self.cennter_mass)
         return  self.cennter_mass
 
     def use_approximation(self, node2):
@@ -182,13 +185,13 @@ class NodeBody:
         :param node:
         :return:
         """
-        s = self.width_node
+        s = node2.width_node
         d = node2.compute_center_mass_node()
         k1  = (self.body.x1 - d[0])**2
         k2 = (self.body.x1 - d[0])**2
 
         k =np.sqrt(k1+k2)
-        if k == 0:
+        if k == 0 or s==0 :
             return False
         o = s / k
 
@@ -256,6 +259,7 @@ class TreeBody:
 
     def calculate_Roo(self,node):
         nodes = self.root.children
+        node.compute_center_mass_node()
         if node.body.ID !=1 :
             node.body.calculate_velocity(self.root.body)
 
@@ -330,9 +334,9 @@ def center_mas():
     pass
 
 g = Ground()
-g.add_body(Body(32, 0, 0, 1, 1))
 g.add_body(Body(32, 1, 1, 1, 1))
-g.add_body(Body(32, 2, 3, 1, 1))
+g.add_body(Body(32, 6, 6, 1, 1))
+g.add_body(Body(32, 7, 7, 1, 1))
 g.add_body(Body(32, -1, 1, 1, 1))
 g.calculate()
 
