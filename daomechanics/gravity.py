@@ -35,9 +35,18 @@ end
 """
 
 
+class Gravity:
+    def calculate(dx, dy, M):
+        v1 = M * dx / ((dx ** 2 + dy ** 2) ** (2 / 3))
+        v2 = M * dy / ((dx ** 2 + dy ** 2) ** (2 / 3))
+
+        return np.array([v1, v2])
+
+
 class Body:
     ID = 0
-    def __init__(self, mass, x0, y0, v0_1, v0_2):
+
+    def __init__(self, mass, x0, y0, v0_1, v0_2, h=0.1):
         self.mass = mass
         self.x1 = x0
         self.x2 = y0
@@ -49,6 +58,7 @@ class Body:
         self.v2_args = [v0_2]
         Body.ID += 1
         self.ID = Body.ID
+        self.h = h
 
     def get_mass(self):
         return self.mass
@@ -77,8 +87,38 @@ class Body:
     def set_y_args(self):
         return self.y_args
 
-    def calculate_velocity(self,body):
-        print('Calculation beween ids' + str(self.ID) + " and  " + str(body.ID))
+    def calculate_velocity(self, body):
+        delta_x = body.x1 - self.x1
+        delta_y = body.x2 - self.x2
+        M = body.get_mass()
+
+        a = Gravity.calculate(delta_x, delta_y, M)
+
+        self.x1 = self.x1 + self.v1 * self.h / 2
+        self.x2 = self.x2 + self.v2 * self.h / 2
+
+        self.v1 = self.v1 + self.h * a[0]
+        self.v1 = self.v2 + self.h * a[1]
+
+        self.v1_args.append(self.v1)
+        self.v2_args.append(self.v2)
+        """
+        leap frog
+        x = x + vx * (h / 2)/c
+        y = y + vy * (h / 2)/c
+
+        vx = (vx + h * u(t, x, y))/c
+        vy = (vy + h * v(t, x, y))/c
+
+        x = x + vx * (h / 2)
+y = y + vy * (h / 2)
+        """
+
+    def reculculate_cordinates(self):
+        self.x1 = self.x1 + self.v1 * self.h / 2
+        self.x2 = self.x2 + self.v2 * self.h / 2
+        self.x_args.append(self.x1)
+        self.y_args.append(self.x2)
 
     def increment_velocity(self, R):
         pass
@@ -89,7 +129,6 @@ class Body:
 
 class NodeBody:
     criteria = 0.5
-
 
     def __init__(self, body, range=[4, 4]):
 
@@ -110,8 +149,8 @@ class NodeBody:
         self.Q_22 = None  # Quadrant 22
         self.children = []  # helper lsit wich contains all nodes described above
 
-    def __set_width_node(self,node):
-        d = self.get_distance( node)
+    def __set_width_node(self, node):
+        d = self.get_distance(node)
         if d > self.width_node:
             self.width_node = d
 
@@ -129,7 +168,7 @@ class NodeBody:
                 self.children.append(node.Q_12)
                 self.__set_width_node(node.Q_12)
                 return
-            node.Q_12 .__add__(node.Q_12, body)
+            node.Q_12.__add__(node.Q_12, body)
         elif body.x1 <= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_21 is None:
                 node.Q_21 = NodeBody(body)
@@ -143,13 +182,13 @@ class NodeBody:
                 self.children.append(node.Q_22)
                 self.__set_width_node(node.Q_22)
                 return
-            node.Q_22 .__add__(node.Q_22, body)
+            node.Q_22.__add__(node.Q_22, body)
 
     def get_distance(self, node2):
         dx = self.body.x1 - node2.body.x2
         dy = self.body.x2 - node2.body.x2
 
-        delta = np.sqrt(dx **2 + dy ** 2)
+        delta = np.sqrt(dx ** 2 + dy ** 2)
         return delta
 
     def get_width_note(self):
@@ -170,10 +209,10 @@ class NodeBody:
         x_coord = sum_x / sum_m
         y_coord = sum_y / sum_m
         self.cennter_mass = np.array([x_coord, y_coord])
-        if self.body.ID==1:
+        if self.body.ID == 1:
             print("center of mass of root:!!!!")
             print(self.cennter_mass)
-        return  self.cennter_mass
+        return self.cennter_mass
 
     def use_approximation(self, node2):
         """
@@ -187,15 +226,15 @@ class NodeBody:
         """
         s = node2.width_node
         d = node2.compute_center_mass_node()
-        k1  = (self.body.x1 - d[0])**2
-        k2 = (self.body.x1 - d[0])**2
+        k1 = (self.body.x1 - d[0]) ** 2
+        k2 = (self.body.x1 - d[0]) ** 2
 
-        k =np.sqrt(k1+k2)
-        if k == 0 or s==0 :
+        k = np.sqrt(k1 + k2)
+        if k == 0 or s == 0:
             return False
         o = s / k
 
-        if  o < NodeBody.criteria:
+        if o < NodeBody.criteria:
             return True
         else:
             return False
@@ -209,13 +248,11 @@ class NodeBody:
         N = self.children
         result = np.array([self.body.x1 * self.body.mass, self.body.x2 * self.body.mass, self.body.mass])
         M = 0
-        if len(N)>0:
-         for i in range(len(N)):
-             result = result + N[i].get_radius_vector_mass_node()
+        if len(N) > 0:
+            for i in range(len(N)):
+                result = result + N[i].get_radius_vector_mass_node()
 
         return result
-
-
 
     def iterate(self):
         if self.Q_11 is not None:
@@ -246,38 +283,36 @@ class TreeBody:
     def print(self):
         self.root.iterate()
 
-    def calculate_V(self,node,nodes):
-        if len(nodes)==0:
+    def calculate_V(self, node, nodes):
+        if len(nodes) == 0:
             return
         for i in range(len(nodes)):
             if node.use_approximation(nodes[i]):
                 print("using app ")
-                print(str(node.body.ID)+" ," + str(nodes[i].body.ID))
-            else :
+                print(str(node.body.ID) + " ," + str(nodes[i].body.ID))
+            else:
                 if node.body.ID != nodes[i].body.ID:
                     node.body.calculate_velocity(nodes[i].body)
-                self.calculate_V(node,nodes[i].children)
+                self.calculate_V(node, nodes[i].children)
         # if node.body.ID!=1 and len(node.children)>0:
         #   self.calculate_V(node,node.children)
 
-
-    def calculate_Roo(self,node):
+    def calculate_Roo(self, node):
         nodes = self.root.children
         node.compute_center_mass_node()
-        if node.body.ID !=1 :
+        if node.body.ID != 1:
             node.body.calculate_velocity(self.root.body)
 
         for i in range(len(nodes)):
 
-
             if node.use_approximation(nodes[i]):
                 print("using app ")
                 print(str(node.body.ID) + " ," + str(nodes[i].body.ID))
-            else :
+            else:
                 if node.body.ID != nodes[i].body.ID:
-                  node.body.calculate_velocity(nodes[i].body)
-                if len(nodes[i].children)>0:
-                  self.calculate_V(node,nodes[i].children)
+                    node.body.calculate_velocity(nodes[i].body)
+                if len(nodes[i].children) > 0:
+                    self.calculate_V(node, nodes[i].children)
 
         for n in node.children:
             self.calculate_Roo(n)
@@ -286,23 +321,26 @@ class TreeBody:
         self.calculate_Roo(self.root)
 
 
-
-
-
 class Ground:
     def __init__(self):
         self.bodies = []
         self.tree = TreeBody()
 
+    def update_coordinates(self):
+        for b in self.bodies:
+            b.reculculate_cordinates()
+
     def add_body(self, body):
         self.bodies.append(body)
         self.tree.add_element(body)
 
-    def calculate(self):
+    def calculate(self,r=3000):
         start = time.time()
-        self.tree.calculate()
+        for i in range(r):
+            self.tree.calculate()
+            self.update_coordinates()
         end = time.time()
-        print( end - start)
+        print(end - start)
 
     def print(self):
         self.tree.print()
@@ -339,13 +377,18 @@ k = d/r
 def center_mas():
     pass
 
+
 g = Ground()
-g.add_body(Body(32, 1, 1, 1, 1))
-g.add_body(Body(32, 6, 6, 1, 1))
+g.add_body(Body(32, 1, 1, -1, -1))
+g.add_body(Body(32, 6, 6, -4, -5))
 g.add_body(Body(32, 7, 7, 1, 1))
-g.add_body(Body(32, 7.1, 6.9, 1, 1))
-g.add_body(Body(32, -1, 1, 1, 1))
+g.add_body(Body(32, 7.1, 6.9, -1, 1))
+g.add_body(Body(32, -1, 1, 1, -1))
+g.add_body(Body(32, 7.5, 6.6, -1, 1))
+g.add_body(Body(32, -5, -5, 1, -1))
+g.add_body(Body(32, 3, 4, -1, 1))
 g.calculate()
+
 
 # for n in range(10):
 #     for m in range(n + 1, 10):
