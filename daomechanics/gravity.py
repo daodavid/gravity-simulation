@@ -1,6 +1,8 @@
 import time
 import timeit
-
+import matplotlib.pyplot as plt
+from matplotlib import animation, rc
+from IPython.display import HTML
 import numpy as np
 
 """
@@ -46,7 +48,7 @@ class Gravity:
 class Body:
     ID = 0
 
-    def __init__(self, mass, x0, y0, v0_1, v0_2, h=0.1):
+    def __init__(self, mass, x0, y0, v0_1, v0_2, h=0.001):
         self.mass = mass
         self.x1 = x0
         self.x2 = y0
@@ -87,31 +89,34 @@ class Body:
     def set_y_args(self):
         return self.y_args
 
+    def update_half_step_coordites(self):
+        self.x1 = self.x1 + self.v1 * self.h / 2
+        self.x1 = self.x2 + self.v2 * self.h / 2
+
     def calculate_velocity(self, body):
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
+
+        if delta_y == 0 or delta_x == 0:
+            return
+
         M = body.get_mass()
 
         a = Gravity.calculate(delta_x, delta_y, M)
 
-        self.x1 = self.x1 + self.v1 * self.h / 2
-        self.x2 = self.x2 + self.v2 * self.h / 2
-
         self.v1 = self.v1 + self.h * a[0]
-        self.v1 = self.v2 + self.h * a[1]
+        self.v2 = self.v2 + self.h * a[1]
 
-        self.v1_args.append(self.v1)
-        self.v2_args.append(self.v2)
         """
         leap frog
-        x = x + vx * (h / 2)/c
-        y = y + vy * (h / 2)/c
+        x = x + vx * (h / 2)
+        y = y + vy * (h / 2)
 
         vx = (vx + h * u(t, x, y))/c
         vy = (vy + h * v(t, x, y))/c
 
         x = x + vx * (h / 2)
-y = y + vy * (h / 2)
+        y = y + vy * (h / 2)
         """
 
     def reculculate_cordinates(self):
@@ -119,6 +124,8 @@ y = y + vy * (h / 2)
         self.x2 = self.x2 + self.v2 * self.h / 2
         self.x_args.append(self.x1)
         self.y_args.append(self.x2)
+        self.v1_args.append(self.v1)
+        self.v2_args.append(self.v2)
 
     def increment_velocity(self, R):
         pass
@@ -325,22 +332,66 @@ class Ground:
     def __init__(self):
         self.bodies = []
         self.tree = TreeBody()
+        self.size = 0
 
     def update_coordinates(self):
         for b in self.bodies:
             b.reculculate_cordinates()
 
+    def update_half_coordinates(self):
+        for b in self.bodies:
+            b.update_half_step_coordites()
+
     def add_body(self, body):
         self.bodies.append(body)
         self.tree.add_element(body)
 
-    def calculate(self,r=3000):
+    def calculate(self, r=9000):
+        self.size = r * self.bodies[0].h
         start = time.time()
         for i in range(r):
+            self.update_half_coordinates()
             self.tree.calculate()
             self.update_coordinates()
         end = time.time()
         print(end - start)
+
+    def get_size( self, n=1):
+        self.z = int(self.size / n)
+        return self.z
+
+    def update_HTML_animation(self, i, arg):
+        ax = plt.gca()
+
+        # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
+        # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
+        i = i * self.z
+
+        arg.clf()
+
+        particles, = ax.plot([], [], 'bo', ms=6)
+        # particles.set_data([], [])
+        # particles.set_data(self.r[i, 0], self.r[i, 1])
+        # particles.set_markersize(20)
+        #
+        g= 10
+        q = plt.scatter(-g, -g, color='black', linewidths=0.1)
+        q = plt.scatter(-g, g, color='black', linewidths=0.1)
+        q = plt.scatter(g, g, color='black', linewidths=0.1)
+        q = plt.scatter(g, -g, color='black', linewidths=0.1)
+
+        for b in self.bodies:
+            # q = plt.scatter(b.x_args[i], b.y_args[i], color='black', linewidths=5)
+            q = plt.scatter(b.x_args[i], b.y_args[i], linewidths=int(b.mass/100))
+            q = plt.plot(b.y_args,b.y_args)
+
+        # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
+        # plt.draw()
+        ax.spines['left'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+
+        return particles
 
     def print(self):
         self.tree.print()
@@ -379,16 +430,32 @@ def center_mas():
 
 
 g = Ground()
-g.add_body(Body(32, 1, 1, -1, -1))
-g.add_body(Body(32, 6, 6, -4, -5))
-g.add_body(Body(32, 7, 7, 1, 1))
-g.add_body(Body(32, 7.1, 6.9, -1, 1))
-g.add_body(Body(32, -1, 1, 1, -1))
-g.add_body(Body(32, 7.5, 6.6, -1, 1))
-g.add_body(Body(32, -5, -5, 1, -1))
-g.add_body(Body(32, 3, 4, -1, 1))
+g.add_body(Body(40, 1, 1, 0.01, 0.001))
+g.add_body(Body(20, -4, 6, -5* np.sin(np.pi / 4), -7* np.cos(np.pi / 4)))
+# g.add_body(Body(32, 7, 7, 1, 1))
+# g.add_body(Body(32, 7.1, 6.9, -1, 1))
+# g.add_body(Body(32, -1, 1, 1, -1))
+# g.add_body(Body(32, 7.5, 6.6, -1, 1))
+# g.add_body(Body(32, -5, -5, 1, -1))
+# g.add_body(Body(32, 3, 4, -1, 1))
 g.calculate()
 
+fig = plt.figure(figsize=(6, 6))
+fig = plt.figure(figsize=(6, 6))
+
+u = lambda t, x, y: 0
+v = lambda t, x, y: -10
+#
+# point.add_force(f)
+# z = point.calculate_radius_vector(20 * np.cos(np.pi / 4), +50 * np.sin(np.pi / 4), n=700)
+# plt.plot(z[:, 0], z[:, 1])
+size = int(g.get_size(1))
+# print(size)
+anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=60, fargs=(fig,), frames=size, blit=False)
+HTML(anim.to_html5_video())
+plt.show()
+
+###  conda install -c conda-forge ffmpeg
 
 # for n in range(10):
 #     for m in range(n + 1, 10):
