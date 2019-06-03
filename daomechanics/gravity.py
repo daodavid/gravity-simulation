@@ -70,6 +70,8 @@ class Body:
         self.x2 = y
         self.x_args.append(x)
         self.y_args.append(y)
+    def get_radious(self):
+        return np.array([self.x_args,self.y_args,self.v1_args,self.v2_args]).T
 
     def set_velocity(self, v1, v2):
         self.v1 = v1
@@ -91,13 +93,13 @@ class Body:
 
     def update_half_step_coordites(self):
         self.x1 = self.x1 + self.v1 * self.h / 2
-        self.x1 = self.x2 + self.v2 * self.h / 2
+        self.x2 = self.x2 + self.v2 * self.h / 2
 
     def calculate_velocity(self, body):
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
 
-        if delta_y == 0 or delta_x == 0:
+        if abs(delta_y) < 1 and abs(delta_x) < 1:
             return
 
         M = body.get_mass()
@@ -108,7 +110,8 @@ class Body:
         self.v2 = self.v2 + self.h * a[1]
 
         if body.ID==1:
-         print("delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1)+" ," + str(self.v2))
+         print("X_arg :"+ str(self.x1)+" ,delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1))
+         print("Y_arg :" + str(self.x2) + " ,delta_Y :" + str(delta_y) + " v1 , v2 =" + str(self.v2) )
 
         """
         leap frog
@@ -356,6 +359,9 @@ class Ground:
         end = time.time()
         print(end - start)
 
+        z = self.bodies[1].get_radious()
+        print(z)
+
     def get_size( self, n=1):
         self.z = int(self.size / n)
         return self.z
@@ -386,7 +392,7 @@ class Ground:
             q = plt.plot(b.y_args,b.y_args)
 
         # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
-        # plt.draw()
+        #plt.draw()
         ax.spines['left'].set_position('zero')
         ax.spines['right'].set_color('none')
         ax.spines['top'].set_color('none')
@@ -430,7 +436,7 @@ def center_mas():
 
 
 g = Ground()
-g.add_body(Body(30, 1, 1, 0.01, 0.001,h=0.1))
+g.add_body(Body(80, 1, 1, 0.01, 0.001,h=0.1))
 g.add_body(Body(2, 6, 4,  np.cos(np.pi / 4), np.cos(np.pi / 4),h=0.1))
 # g.add_body(Body(32, 7, 7, 1, 1))
 # g.add_body(Body(32, 7.1, 6.9, -1, 1))
