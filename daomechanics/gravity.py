@@ -39,8 +39,8 @@ end
 
 class Gravity:
     def calculate(dx, dy, M):
-        v1 = M * dx / ((dx ** 2 + dy ** 2) ** (2 / 3))
-        v2 = M * dy / ((dx ** 2 + dy ** 2) ** (2 / 3))
+        v1 = M * dx / ((dx ** 2 + dy ** 2) ** (3 / 2))
+        v2 = M * dy / ((dx ** 2 + dy ** 2) ** (3/2))
 
         return np.array([v1, v2])
 
@@ -106,6 +106,9 @@ class Body:
 
         self.v1 = self.v1 + self.h * a[0]
         self.v2 = self.v2 + self.h * a[1]
+
+        if body.ID==1:
+         print("delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1)+" ," + str(self.v2))
 
         """
         leap frog
@@ -217,8 +220,7 @@ class NodeBody:
         y_coord = sum_y / sum_m
         self.cennter_mass = np.array([x_coord, y_coord])
         if self.body.ID == 1:
-            print("center of mass of root:!!!!")
-            print(self.cennter_mass)
+              pass
         return self.cennter_mass
 
     def use_approximation(self, node2):
@@ -295,8 +297,7 @@ class TreeBody:
             return
         for i in range(len(nodes)):
             if node.use_approximation(nodes[i]):
-                print("using app ")
-                print(str(node.body.ID) + " ," + str(nodes[i].body.ID))
+                pass
             else:
                 if node.body.ID != nodes[i].body.ID:
                     node.body.calculate_velocity(nodes[i].body)
@@ -313,8 +314,7 @@ class TreeBody:
         for i in range(len(nodes)):
 
             if node.use_approximation(nodes[i]):
-                print("using app ")
-                print(str(node.body.ID) + " ," + str(nodes[i].body.ID))
+                pass
             else:
                 if node.body.ID != nodes[i].body.ID:
                     node.body.calculate_velocity(nodes[i].body)
@@ -346,7 +346,7 @@ class Ground:
         self.bodies.append(body)
         self.tree.add_element(body)
 
-    def calculate(self, r=9000):
+    def calculate(self, r=900):
         self.size = r * self.bodies[0].h
         start = time.time()
         for i in range(r):
@@ -365,7 +365,7 @@ class Ground:
 
         # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
         # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
-        i = i * self.z
+        i = i
 
         arg.clf()
 
@@ -430,8 +430,8 @@ def center_mas():
 
 
 g = Ground()
-g.add_body(Body(40, 1, 1, 0.01, 0.001))
-g.add_body(Body(20, -4, 6, -5* np.sin(np.pi / 4), -7* np.cos(np.pi / 4)))
+g.add_body(Body(30, 1, 1, 0.01, 0.001,h=0.1))
+g.add_body(Body(2, 6, 4,  np.cos(np.pi / 4), np.cos(np.pi / 4),h=0.1))
 # g.add_body(Body(32, 7, 7, 1, 1))
 # g.add_body(Body(32, 7.1, 6.9, -1, 1))
 # g.add_body(Body(32, -1, 1, 1, -1))
@@ -451,7 +451,7 @@ v = lambda t, x, y: -10
 # plt.plot(z[:, 0], z[:, 1])
 size = int(g.get_size(1))
 # print(size)
-anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=60, fargs=(fig,), frames=size, blit=False)
+anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=5, fargs=(fig,), frames=300, blit=False)
 HTML(anim.to_html5_video())
 plt.show()
 
