@@ -209,8 +209,9 @@ class NodeBody:
         N = self.children
         result = np.array([self.body.x1 * self.body.mass, self.body.x2 * self.body.mass, self.body.mass])
         M = 0
-        for i in range(len(N)):
-            result = result + N[i].get_radius_vector_mass_node()
+        if len(N)>0:
+         for i in range(len(N)):
+             result = result + N[i].get_radius_vector_mass_node()
 
         return result
 
@@ -246,15 +247,18 @@ class TreeBody:
         self.root.iterate()
 
     def calculate_V(self,node,nodes):
-
+        if len(nodes)==0:
+            return
         for i in range(len(nodes)):
             if node.use_approximation(nodes[i]):
-                pass
+                print("using app ")
+                print(str(node.body.ID)+" ," + str(nodes[i].body.ID))
             else :
-                node.body.calculate_velocity(nodes[i].body)
+                if node.body.ID != nodes[i].body.ID:
+                    node.body.calculate_velocity(nodes[i].body)
                 self.calculate_V(node,nodes[i].children)
-        if node.body.ID!=1 and len(node.children)>0:
-          self.calculate_V(node,node.children)
+        # if node.body.ID!=1 and len(node.children)>0:
+        #   self.calculate_V(node,node.children)
 
 
     def calculate_Roo(self,node):
@@ -264,14 +268,16 @@ class TreeBody:
             node.body.calculate_velocity(self.root.body)
 
         for i in range(len(nodes)):
-            if node.body.ID == nodes[i].body.ID:
-                continue
+
+
             if node.use_approximation(nodes[i]):
-                #caolculate with center of mass
-                pass
+                print("using app ")
+                print(str(node.body.ID) + " ," + str(nodes[i].body.ID))
             else :
-                node.body.calculate_velocity(nodes[i].body)
-                self.calculate_V(node,nodes[i].children)
+                if node.body.ID != nodes[i].body.ID:
+                  node.body.calculate_velocity(nodes[i].body)
+                if len(nodes[i].children)>0:
+                  self.calculate_V(node,nodes[i].children)
 
         for n in node.children:
             self.calculate_Roo(n)
@@ -337,6 +343,7 @@ g = Ground()
 g.add_body(Body(32, 1, 1, 1, 1))
 g.add_body(Body(32, 6, 6, 1, 1))
 g.add_body(Body(32, 7, 7, 1, 1))
+g.add_body(Body(32, 7.1, 6.9, 1, 1))
 g.add_body(Body(32, -1, 1, 1, 1))
 g.calculate()
 
