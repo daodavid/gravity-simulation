@@ -38,9 +38,11 @@ end
 
 
 class Gravity:
+    G = 0.01
+    @staticmethod
     def calculate(dx, dy, M):
-        v1 = M * dx / ((dx ** 2 + dy ** 2) ** (3 / 2))
-        v2 = M * dy / ((dx ** 2 + dy ** 2) ** (3/2))
+        v1 = Gravity.G*M * dx / ((dx ** 2 + dy ** 2) ** (3 / 2))
+        v2 = Gravity.G*M * dy / ((dx ** 2 + dy ** 2) ** (3/2))
 
         return np.array([v1, v2])
 
@@ -99,15 +101,15 @@ class Body:
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
 
-        if abs(delta_y) < 1 and abs(delta_x) < 1:
-            return
+        ##if abs(delta_y) < 1 and abs(delta_x) < 1:
+          ##  return
 
         M = body.get_mass()
 
         a = Gravity.calculate(delta_x, delta_y, M)
 
-        self.v1 = self.v1 + self.h * a[0]
-        self.v2 = self.v2 + self.h * a[1]
+        p1 = self.v1 = self.v1 + self.h * a[0]
+        p2 = self.v2 = self.v2 + self.h * a[1]
 
         if body.ID==1:
          print("X_arg :"+ str(self.x1)+" ,delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1))
@@ -269,8 +271,6 @@ class NodeBody:
     def iterate(self):
         if self.Q_11 is not None:
             self.Q_11.iterate()
-        print(self.body.__str__())
-        self.execute(None)
 
         if self.Q_21 is not None:
             self.Q_21.iterate()
@@ -435,16 +435,18 @@ def center_mas():
     pass
 
 
+print("343!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
 g = Ground()
-g.add_body(Body(80, 1, 1, 0.01, 0.001,h=0.1))
-g.add_body(Body(2, 6, 4,  np.cos(np.pi / 4), np.cos(np.pi / 4),h=0.1))
+g.add_body(Body(1220, 1, 1, 0.01, 0.001,h=0.1))
+g.add_body(Body(2, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
 # g.add_body(Body(32, 7, 7, 1, 1))
 # g.add_body(Body(32, 7.1, 6.9, -1, 1))
 # g.add_body(Body(32, -1, 1, 1, -1))
 # g.add_body(Body(32, 7.5, 6.6, -1, 1))
 # g.add_body(Body(32, -5, -5, 1, -1))
 # g.add_body(Body(32, 3, 4, -1, 1))
-g.calculate()
+g.calculate(r=100)
 
 fig = plt.figure(figsize=(6, 6))
 fig = plt.figure(figsize=(6, 6))
@@ -457,7 +459,7 @@ v = lambda t, x, y: -10
 # plt.plot(z[:, 0], z[:, 1])
 size = int(g.get_size(1))
 # print(size)
-anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=5, fargs=(fig,), frames=300, blit=False)
+anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=5, fargs=(fig,), frames=100, blit=False)
 HTML(anim.to_html5_video())
 plt.show()
 
