@@ -101,8 +101,8 @@ class Body:
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
 
-        ##if abs(delta_y) < 1 and abs(delta_x) < 1:
-          ##  return
+        if abs(delta_y) < 1 and abs(delta_x) < 1:
+            return
 
         M = body.get_mass()
 
@@ -350,28 +350,34 @@ class Ground:
         self.tree.add_element(body)
 
     def calculate(self, r=900):
-        self.size = r * self.bodies[0].h
+        
         start = time.time()
         for i in range(r):
             self.update_half_coordinates()
             self.tree.calculate()
             self.update_coordinates()
         end = time.time()
+        print(time)
         print(end - start)
 
-        z = self.bodies[1].get_radious()
+        z = len(self.bodies[1].x_args)
+        self.size = z
         print(z)
 
-    def get_size( self, n=1):
-        self.z = int(self.size / n)
-        return self.z
+    def get_size( self, n=100):
+        self.n=n
+        self.increment_plot = int(self.size / n)
+        self.m=0
+        return n
 
     def update_HTML_animation(self, i, arg):
         ax = plt.gca()
 
         # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
         # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
-        i = i
+        self.m=self.m+ self.increment_plot
+        if(self.m<self.size):
+            i=self.m
 
         arg.clf()
 
@@ -438,15 +444,15 @@ def center_mas():
 print("343!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 g = Ground()
-g.add_body(Body(1220, 1, 1, 0.01, 0.001,h=0.1))
-g.add_body(Body(2, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
-# g.add_body(Body(32, 7, 7, 1, 1))
-# g.add_body(Body(32, 7.1, 6.9, -1, 1))
-# g.add_body(Body(32, -1, 1, 1, -1))
-# g.add_body(Body(32, 7.5, 6.6, -1, 1))
-# g.add_body(Body(32, -5, -5, 1, -1))
-# g.add_body(Body(32, 3, 4, -1, 1))
-g.calculate(r=100)
+g.add_body(Body(1220, 1, 1, 0.01, 0.001,h=0.06))
+g.add_body(Body(7, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
+g.add_body(Body(3, 4, 5, -1*np.cos(np.pi / 4), -2*np.cos(np.pi / 4),h=0.06))
+g.add_body(Body(3333,-9, -4, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
+g.add_body(Body(100, -7.5, -5.2, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
+g.add_body(Body(32, -10, -11,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
+#g.add_body(Body(32, -5, -5, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
+#g.add_body(Body(32, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
+g.calculate(r=8000)
 
 fig = plt.figure(figsize=(6, 6))
 fig = plt.figure(figsize=(6, 6))
@@ -457,9 +463,10 @@ v = lambda t, x, y: -10
 # point.add_force(f)
 # z = point.calculate_radius_vector(20 * np.cos(np.pi / 4), +50 * np.sin(np.pi / 4), n=700)
 # plt.plot(z[:, 0], z[:, 1])
-size = int(g.get_size(1))
+n = 100
+size = int(g.get_size(n))
 # print(size)
-anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=5, fargs=(fig,), frames=100, blit=False)
+anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=5, fargs=(fig,), frames=n, blit=False)
 HTML(anim.to_html5_video())
 plt.show()
 
