@@ -9,38 +9,20 @@ import numpy as np
 https://beltoforion.de/article.php?a=barnes-hut-galaxy-simulator
 The Barnes-Hut algorithm
 """
-"""
- 
-Function MainApp::CalcForce
-  for all particles
-    force = RootNode.CalculateForceFromTree(particle)
-  end for
-end 
-
-Function force = TreeNode::CalculateForce(targetParticle)
-  force = 0
-
-  if number of particle equals 1
-    force = Gravitational force between targetParticle and particle
-  else
-    r = distance from nodes center of mass to targetParticle
-    d = height of the node
-    if (d/r < θ)
-      force = Gravitational force between targetParticle and node 
-    else
-      for all child nodes n
-        force += n.CalculateForce(particle)
-      end for
-    end if
-  end
-end
-"""
 
 
 class Gravity:
     G = 0.01
+    
     @staticmethod
     def calculate(dx, dy, M):
+        """
+        dx is distance between Obj1 and Obj2 measured under X axis
+        dy is distance between Obj1 and Obj2 measured under Y axis
+        M is the mass of obj2
+        """
+        
+        #gravity low
         v1 = Gravity.G*M * dx / ((dx ** 2 + dy ** 2) ** (3 / 2))
         v2 = Gravity.G*M * dy / ((dx ** 2 + dy ** 2) ** (3/2))
 
@@ -48,60 +30,117 @@ class Gravity:
 
 
 class Body:
+    
+    """
+    The body is the material point.For the material point we do not consider its form,
+    the only meaningful parameters are,mass and radius vector
+    """
     ID = 0
 
     def __init__(self, mass, x0, y0, v0_1, v0_2, h=0.001):
         self.mass = mass
-        self.x1 = x0
-        self.x2 = y0
-        self.v1 = v0_1
-        self.v2 = v0_2
-        self.x_args = [x0]
-        self.y_args = [y0]
-        self.v1_args = [v0_1]
-        self.v2_args = [v0_2]
+        self.x1 = x0  #current lenght of X coordinate
+        self.x2 = y0  #current lenght of Y coordinate
+        self.v1 = v0_1 ##current velocity on X coord
+        self.v2 = v0_2 # current velocity on Y coord 
+        self.x_args = [x0] #list of moment state of X coords
+        self.y_args = [y0]  
+        self.v1_args = [v0_1] #list of velocities on X coords
+        self.v2_args = [v0_2]  #list of velocities on Y coords
         Body.ID += 1
         self.ID = Body.ID
-        self.h = h
+        self.h = h  #integration step
 
     def get_mass(self):
         return self.mass
 
     def set_coord(self, x, y):
+        """
+        set state of the object,its coordinates
+        """
         self.x1 = x
         self.x2 = y
         self.x_args.append(x)
         self.y_args.append(y)
     def get_radious(self):
+        """
+        returs all coordinates X_args,Y_args and their velocity as matrix (numpy array)
+        """
         return np.array([self.x_args,self.y_args,self.v1_args,self.v2_args]).T
 
     def set_velocity(self, v1, v2):
+        """
+        setting of velocity
+        """
         self.v1 = v1
         self.v2 = v2
         self.v1_args.append(v1)
         self.v2_args.append(v2)
 
     def get_init_cordinates(self):
+        """
+        the initial state of coordinates
+        """
         return np.array([self.x0_1, self.x0_2])
 
     def get_init_velocity(self):
+          """
+           the initial state of velocity
+        """
         return np.array([self.v0_1, self.v0_2])
 
     def get_x_args(self):
+        """
+        return all x_cordinates until this moment
+        """
         return self.x_args
 
     def set_y_args(self):
+          """
+          return all y_cordinates until this moment
+          """
         return self.y_args
+    
+    
+    """
+    leap from main algoritam
+    leap frog  integration main algoritams
+     
+    step 1)
+        x = x + vx * (h / 2)
+        y = y + vy * (h / 2)
+     
+     step 2)
+        vx = (vx + h * u(t, x, y))/c
+        vy = (vy + h * v(t, x, y))/c
+    
+     step 3)   
+        x = x + vx * (h / 2)
+        y = y + vy * (h / 2)
+        
+        """
 
     def update_half_step_coordites(self):
+        """
+        step 1 of leapFrog integration
+        This method is used for calculating of x coordinates
+        for every particles before to be calculated the  new velocity values
+        """
         self.x1 = self.x1 + self.v1 * self.h / 2
         self.x2 = self.x2 + self.v2 * self.h / 2
 
     def calculate_velocity(self, body):
+        """
+        step 2 of leapfrog integration.
+        Here will be calculated the new velocity parameters
+        in way that every force will contribute for changing of velocaty of body 
+         """
+        
+       
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
 
-        if abs(delta_y) < 1 and abs(delta_x) < 1:
+        if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
             return
 
         M = body.get_mass()
@@ -114,20 +153,18 @@ class Body:
         if body.ID==1:
          print("X_arg :"+ str(self.x1)+" ,delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1))
          print("Y_arg :" + str(self.x2) + " ,delta_Y :" + str(delta_y) + " v1 , v2 =" + str(self.v2) )
-
-        """
-        leap frog
-        x = x + vx * (h / 2)
-        y = y + vy * (h / 2)
-
-        vx = (vx + h * u(t, x, y))/c
-        vy = (vy + h * v(t, x, y))/c
-
-        x = x + vx * (h / 2)
-        y = y + vy * (h / 2)
-        """
+      
+        
+    def caluclate_Velocity_center_mass():
+        pass   
+       
+      
+      
 
     def reculculate_cordinates(self):
+        """
+        step 3 of leapfrog
+        """
         self.x1 = self.x1 + self.v1 * self.h / 2
         self.x2 = self.x2 + self.v2 * self.h / 2
         self.x_args.append(self.x1)
@@ -143,6 +180,18 @@ class Body:
 
 
 class NodeBody:
+    
+    """
+    Node ,leaf
+    
+    The objects of this class 
+    contain the body and its childs in Tree
+    
+    This class coutains the main logic of Barnes-Hut algoritams
+    
+    every node has a 4 childs represent 4 quadrants
+    
+    """
     criteria = 0.5
 
     def __init__(self, body, range=[4, 4]):
@@ -170,6 +219,10 @@ class NodeBody:
             self.width_node = d
 
     def __add__(self, node, body):
+        """
+        insert into tree depends on comparing of coordinates
+        """
+        
         if body.x1 <= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_11 is None:
                 node.Q_11 = NodeBody(body)
@@ -211,6 +264,8 @@ class NodeBody:
 
     def compute_center_mass_node(self):
         """
+        
+        recursivly compute center of mass of one node and its leafs
         R = Sum (x_i*m_iE1 + y_i*mi*E2)/M
         where M = sum m_i
         :param node: nodeBody
@@ -234,6 +289,9 @@ class NodeBody:
         comparing W/R
         where W - width of the region of node
         R distance between body and node
+        
+        this method do diciacion if the calulation of force will be 
+        acording only one body of node or the hole bodies belongs to the node as center of mass
         :param distance:
         :param node:
         :return:
@@ -305,8 +363,7 @@ class TreeBody:
                 if node.body.ID != nodes[i].body.ID:
                     node.body.calculate_velocity(nodes[i].body)
                 self.calculate_V(node, nodes[i].children)
-        # if node.body.ID!=1 and len(node.children)>0:
-        #   self.calculate_V(node,node.children)
+ 
 
     def calculate_Roo(self, node):
         nodes = self.root.children
