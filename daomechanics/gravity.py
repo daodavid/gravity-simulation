@@ -1,84 +1,194 @@
 import time
 import timeit
-
+import matplotlib.pyplot as plt
+from matplotlib import animation, rc
+from IPython.display import HTML
 import numpy as np
 
 """
 https://beltoforion.de/article.php?a=barnes-hut-galaxy-simulator
 The Barnes-Hut algorithm
 """
-"""
- 
-Function MainApp::CalcForce
-  for all particles
-    force = RootNode.CalculateForceFromTree(particle)
-  end for
-end 
 
-Function force = TreeNode::CalculateForce(targetParticle)
-  force = 0
 
-  if number of particle equals 1
-    force = Gravitational force between targetParticle and particle
-  else
-    r = distance from nodes center of mass to targetParticle
-    d = height of the node
-    if (d/r < θ)
-      force = Gravitational force between targetParticle and node 
-    else
-      for all child nodes n
-        force += n.CalculateForce(particle)
-      end for
-    end if
-  end
-end
-"""
+class Gravity:
+    G = 0.01
+    
+    @staticmethod
+    def calculate(dx, dy, M):
+        """
+        dx is distance between Obj1 and Obj2 measured under X axis
+        dy is distance between Obj1 and Obj2 measured under Y axis
+        M is the mass of obj2
+        """
+        
+        #gravity low
+        v1 = Gravity.G*M * dx / ((dx ** 2 + dy ** 2) ** (3 / 2))
+        v2 = Gravity.G*M * dy / ((dx ** 2 + dy ** 2) ** (3/2))
+
+        return np.array([v1, v2])
 
 
 class Body:
+    
+    """
+    The body is the material point.For the material point we do not consider its form,
+    the only meaningful parameters are,mass and radius vector
+    """
     ID = 0
-    def __init__(self, mass, x0, y0, v0_1, v0_2):
+
+    def __init__(self, mass, x0, y0, v0_1, v0_2, h=0.001):
         self.mass = mass
-        self.x1 = x0
-        self.x2 = y0
-        self.v1 = v0_1
-        self.v2 = v0_2
-        self.x_args = [x0]
-        self.y_args = [y0]
-        self.v1_args = [v0_1]
-        self.v2_args = [v0_2]
+        self.x1 = x0  #current lenght of X coordinate
+        self.x2 = y0  #current lenght of Y coordinate
+        self.v1 = v0_1 ##current velocity on X coord
+        self.v2 = v0_2 # current velocity on Y coord 
+        self.x_args = [x0] #list of moment state of X coords
+        self.y_args = [y0]  
+        self.v1_args = [v0_1] #list of velocities on X coords
+        self.v2_args = [v0_2]  #list of velocities on Y coords
         Body.ID += 1
         self.ID = Body.ID
+        self.h = h  #integration step
 
     def get_mass(self):
         return self.mass
 
     def set_coord(self, x, y):
+        """
+        set state of the object,its coordinates
+        """
         self.x1 = x
         self.x2 = y
         self.x_args.append(x)
         self.y_args.append(y)
+    def get_radious(self):
+        """
+        returs all coordinates X_args,Y_args and their velocity as matrix (numpy array)
+        """
+        return np.array([self.x_args,self.y_args,self.v1_args,self.v2_args]).T
 
     def set_velocity(self, v1, v2):
+        """
+        setting of velocity
+        """
         self.v1 = v1
         self.v2 = v2
         self.v1_args.append(v1)
         self.v2_args.append(v2)
 
     def get_init_cordinates(self):
+        """
+        the initial state of coordinates
+        """
         return np.array([self.x0_1, self.x0_2])
 
     def get_init_velocity(self):
+        """
+          the initial state of velocity
+        """
         return np.array([self.v0_1, self.v0_2])
 
     def get_x_args(self):
+        """
+        return all x_cordinates until this moment
+        """
         return self.x_args
 
     def set_y_args(self):
+        """
+         return all y_cordinates until this moment
+        """
+          
         return self.y_args
+    
+    
+    """
+        leap from main algoritam
+        leap frog  integration main algoritams
+     
+        step 1)
+            x = x + vx * (h / 2)
+                y = y + vy * (h / 2)
+     
+        step 2)
+            vx = (vx + h * u(t, x, y))/c
+            vy = (vy + h * v(t, x, y))/c
+    
+         step 3)   
+            x = x + vx * (h / 2)
+            y = y + vy * (h / 2)
+        
+        """
 
-    def calculate_velocity(self,body):
-        print('Calculation beween ids' + str(self.ID) + " and  " + str(body.ID))
+    def update_half_step_coordites(self):
+        """
+        step 1 of leapFrog integration
+        This method is used for calculating of x coordinates
+        for every particles before to be calculated the  new velocity values
+        """
+        self.x1 = self.x1 + self.v1 * self.h / 2
+        self.x2 = self.x2 + self.v2 * self.h / 2
+
+    def calculate_velocity(self, body):
+        """
+        step 2 of leapfrog integration.
+        Here will be calculated the new velocity parameters
+        in way that every force will contribute for changing of velocaty of body 
+         """
+        
+       
+        delta_x = body.x1 - self.x1
+        delta_y = body.x2 - self.x2
+
+        if abs(delta_y) < 1.5 and abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
+           print("sxd1s2= " + str(delta_x))
+           self.v1 =self.v1 - self.v1/1000
+           self.v2 = self.v2 -  self.v2/1000
+           return
+           
+
+        M = body.get_mass()
+
+        a = Gravity.calculate(delta_x, delta_y, M)
+
+        p1 = self.v1 = self.v1 + self.h * a[0]
+        p2 = self.v2 = self.v2 + self.h * a[1]
+
+        if body.ID==1:
+         #print("X_arg :"+ str(self.x1)+" ,delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1))
+         #print("Y_arg :" + str(self.x2) + " ,delta_Y :" + str(delta_y) + " v1 , v2 =" + str(self.v2) )
+         pass
+      
+        
+    def caluclate_velocity_center_mass(self,coord,mass):
+        """
+        calculate force acting to body using the center of mass
+        """
+        delta_x = coord[0] - self.x1
+        delta_y = coord[1] - self.x2
+        if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
+           print("delata_x= " + str(delta_x))
+           pass
+        a = Gravity.calculate(delta_x, delta_y, mass)
+
+        self.v1 = self.v1 + self.h * a[0]
+        self.v2 = self.v2 + self.h * a[1]
+
+        
+      
+      
+
+    def reculculate_cordinates(self):
+        """
+        step 3 of leapfrog
+        """
+        self.x1 = self.x1 + self.v1 * self.h / 2
+        self.x2 = self.x2 + self.v2 * self.h / 2
+        self.x_args.append(self.x1)
+        self.y_args.append(self.x2)
+        self.v1_args.append(self.v1)
+        self.v2_args.append(self.v2)
 
     def increment_velocity(self, R):
         pass
@@ -88,8 +198,19 @@ class Body:
 
 
 class NodeBody:
+    
+    """
+    Node ,leaf
+    
+    The objects of this class 
+    contain the body and its childs in Tree
+    
+    This class coutains the main logic of Barnes-Hut algoritams
+    
+    every node has a 4 childs represent 4 quadrants
+    
+    """
     criteria = 0.5
-
 
     def __init__(self, body, range=[4, 4]):
 
@@ -110,12 +231,16 @@ class NodeBody:
         self.Q_22 = None  # Quadrant 22
         self.children = []  # helper lsit wich contains all nodes described above
 
-    def __set_width_node(self,node):
-        d = self.get_distance( node)
+    def __set_width_node(self, node):
+        d = self.get_distance(node)
         if d > self.width_node:
             self.width_node = d
 
     def __add__(self, node, body):
+        """
+        insert into tree depends on comparing of coordinates
+        """
+        
         if body.x1 <= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_11 is None:
                 node.Q_11 = NodeBody(body)
@@ -129,7 +254,7 @@ class NodeBody:
                 self.children.append(node.Q_12)
                 self.__set_width_node(node.Q_12)
                 return
-            node.Q_12 .__add__(node.Q_12, body)
+            node.Q_12.__add__(node.Q_12, body)
         elif body.x1 <= node.body.x1 and body.x2 <= node.body.x2:
             if node.Q_21 is None:
                 node.Q_21 = NodeBody(body)
@@ -143,13 +268,13 @@ class NodeBody:
                 self.children.append(node.Q_22)
                 self.__set_width_node(node.Q_22)
                 return
-            node.Q_22 .__add__(node.Q_22, body)
+            node.Q_22.__add__(node.Q_22, body)
 
     def get_distance(self, node2):
         dx = self.body.x1 - node2.body.x2
         dy = self.body.x2 - node2.body.x2
 
-        delta = np.sqrt(dx **2 + dy ** 2)
+        delta = np.sqrt(dx ** 2 + dy ** 2)
         return delta
 
     def get_width_note(self):
@@ -157,6 +282,8 @@ class NodeBody:
 
     def compute_center_mass_node(self):
         """
+        
+        recursivly compute center of mass of one node and its leafs
         R = Sum (x_i*m_iE1 + y_i*mi*E2)/M
         where M = sum m_i
         :param node: nodeBody
@@ -169,11 +296,11 @@ class NodeBody:
         sum_m = c[2]  # sum of m_i
         x_coord = sum_x / sum_m
         y_coord = sum_y / sum_m
-        self.cennter_mass = np.array([x_coord, y_coord])
-        if self.body.ID==1:
-            print("center of mass of root:!!!!")
-            print(self.cennter_mass)
-        return  self.cennter_mass
+        self.center_mass = np.array([x_coord, y_coord])
+        self.mass_node=sum_m
+        if self.body.ID == 1:
+              pass
+        return self.center_mass
 
     def use_approximation(self, node2):
         """
@@ -181,21 +308,24 @@ class NodeBody:
         comparing W/R
         where W - width of the region of node
         R distance between body and node
+        
+        this method do diciacion if the calulation of force will be 
+        acording only one body of node or the hole bodies belongs to the node as center of mass
         :param distance:
         :param node:
         :return:
         """
         s = node2.width_node
         d = node2.compute_center_mass_node()
-        k1  = (self.body.x1 - d[0])**2
-        k2 = (self.body.x1 - d[0])**2
+        k1 = (self.body.x1 - d[0]) ** 2
+        k2 = (self.body.x1 - d[0]) ** 2
 
-        k =np.sqrt(k1+k2)
-        if k == 0 or s==0 :
+        k = np.sqrt(k1 + k2)
+        if k == 0 or s == 0:
             return False
         o = s / k
 
-        if  o < NodeBody.criteria:
+        if o < NodeBody.criteria:
             return True
         else:
             return False
@@ -209,18 +339,15 @@ class NodeBody:
         N = self.children
         result = np.array([self.body.x1 * self.body.mass, self.body.x2 * self.body.mass, self.body.mass])
         M = 0
-        for i in range(len(N)):
-            result = result + N[i].get_radius_vector_mass_node()
+        if len(N) > 0:
+            for i in range(len(N)):
+                result = result + N[i].get_radius_vector_mass_node()
 
         return result
-
-
 
     def iterate(self):
         if self.Q_11 is not None:
             self.Q_11.iterate()
-        print(self.body.__str__())
-        self.execute(None)
 
         if self.Q_21 is not None:
             self.Q_21.iterate()
@@ -245,33 +372,33 @@ class TreeBody:
     def print(self):
         self.root.iterate()
 
-    def calculate_V(self,node,nodes):
-
+    def calculate_V(self, node, nodes):
+        if len(nodes) == 0:
+            return
         for i in range(len(nodes)):
             if node.use_approximation(nodes[i]):
-                pass
-            else :
-                node.body.calculate_velocity(nodes[i].body)
-                self.calculate_V(node,nodes[i].children)
-        if node.body.ID!=1 and len(node.children)>0:
-          self.calculate_V(node,node.children)
+                node.body.caluclate_velocity_center_mass(nodes[i].center_mass,nodes[i].mass_node)
+                if node.body.ID != nodes[i].body.ID:
+                    node.body.calculate_velocity(nodes[i].body)
+                self.calculate_V(node, nodes[i].children)
+ 
 
-
-    def calculate_Roo(self,node):
+    def calculate_Roo(self, node):
         nodes = self.root.children
         node.compute_center_mass_node()
-        if node.body.ID !=1 :
+        if node.body.ID != 1:
             node.body.calculate_velocity(self.root.body)
 
         for i in range(len(nodes)):
-            if node.body.ID == nodes[i].body.ID:
-                continue
+
             if node.use_approximation(nodes[i]):
-                #caolculate with center of mass
-                pass
-            else :
-                node.body.calculate_velocity(nodes[i].body)
-                self.calculate_V(node,nodes[i].children)
+                node.body.caluclate_velocity_center_mass(nodes[i].center_mass,nodes[i].mass_node)
+
+            else:
+                if node.body.ID != nodes[i].body.ID:
+                    node.body.calculate_velocity(nodes[i].body)
+                if len(nodes[i].children) > 0:
+                    self.calculate_V(node, nodes[i].children)
 
         for n in node.children:
             self.calculate_Roo(n)
@@ -280,23 +407,78 @@ class TreeBody:
         self.calculate_Roo(self.root)
 
 
-
-
-
 class Ground:
     def __init__(self):
+        print("innit Ground")
         self.bodies = []
         self.tree = TreeBody()
+        self.size = 0
+
+    def update_coordinates(self):
+        for b in self.bodies:
+            b.reculculate_cordinates()
+
+    def update_half_coordinates(self):
+        for b in self.bodies:
+            b.update_half_step_coordites()
 
     def add_body(self, body):
         self.bodies.append(body)
         self.tree.add_element(body)
 
-    def calculate(self):
+    def calculate(self, r=900):
+        
         start = time.time()
-        self.tree.calculate()
+        for i in range(r):
+            self.update_half_coordinates()
+            self.tree.calculate()
+            self.update_coordinates()
         end = time.time()
-        print( end - start)
+        print(time)
+        print(end - start)
+
+        z = len(self.bodies[1].x_args)
+        self.size = z
+        
+
+    def get_size( self, n=100):
+        self.n=n
+        self.increment_plot = int(self.size / n)
+        self.m=0
+        return n
+
+    def update_HTML_animation(self, i, arg):
+        ax = plt.gca()
+
+        # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
+        # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
+        self.m=self.m+ self.increment_plot
+        if(self.m<self.size):
+            i=self.m
+
+        arg.clf()
+
+        particles, = ax.plot([], [], 'bo', ms=6)
+        # particles.set_data([], [])
+        # particles.set_data(self.r[i, 0], self.r[i, 1])
+        # particles.set_markersize(20)
+        #
+
+    
+        
+        q = plt.scatter(-7, -10, linewidths=0.01)
+        q = plt.scatter(7, 10, linewidths=0.001)
+        for b in self.bodies:
+            q = plt.scatter(b.x_args[i], b.y_args[i], linewidths=int(b.mass/100))
+          
+
+        # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
+        #plt.draw()
+        ax.spines['left'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+
+        return particles
 
     def print(self):
         self.tree.print()
@@ -333,12 +515,9 @@ k = d/r
 def center_mas():
     pass
 
-g = Ground()
-g.add_body(Body(32, 1, 1, 1, 1))
-g.add_body(Body(32, 6, 6, 1, 1))
-g.add_body(Body(32, 7, 7, 1, 1))
-g.add_body(Body(32, -1, 1, 1, 1))
-g.calculate()
+
+
+###  conda install -c conda-forge ffmpeg
 
 # for n in range(10):
 #     for m in range(n + 1, 10):
