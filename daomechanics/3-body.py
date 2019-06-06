@@ -1,29 +1,25 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun  6 14:57:40 2019
+Created on Thu Jun  6 16:23:38 2019
 
 @author: David
 """
+
 from gravity import *
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 from IPython.display import HTML
 import numpy as np
-print("gdasdasge")
-print("WOW WOW OWWO!!")
-step = 0.1
+print("ggdsade")
+step=0.01
 g = Ground()
-g.add_body(Body(1220, 1, 1, 0.01, 0.001,h=step))
-g.add_body(Body(7, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(3, 4, 5, -1*np.cos(np.pi / 4), -2*np.cos(np.pi / 4),h=step))
-g.add_body(Body(3333,-9, -4, 0.1,0.1,h=step))
-g.add_body(Body(100, -7.5, -5.2, 3*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(32, -10, -11,  3*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(1100, -5, -4,  3*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(32, -4, -7,  3*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
+g.add_body(Body(1200, 1, 1, 1, 0,h=step))
+g.add_body(Body(3000, 5, 1, -1, 0,h=step))
+
 #g.add_body(Body(32, -5, -5, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
 #g.add_body(Body(32, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
-g.calculate(r=5000)
+
+g.calculate(r=500)
 
 fig = plt.figure(figsize=(6, 6))
 fig = plt.figure(figsize=(6, 6))
@@ -36,6 +32,7 @@ v = lambda t, x, y: -10
 # plt.plot(z[:, 0], z[:, 1])
 n = 400
 size = int(g.get_size(n))
+print("DASDASDASDASD")
 # print(size)
 anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
 HTML(anim.to_html5_video())

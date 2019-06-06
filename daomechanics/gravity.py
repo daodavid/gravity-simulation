@@ -141,8 +141,12 @@ class Body:
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
 
-        if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
-            return
+        if abs(delta_y) < 1.5 and abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
+           print("sxd1s2= " + str(delta_x))
+           self.v1 =self.v1 - self.v1/1000
+           self.v2 = self.v2 -  self.v2/1000
+           return
+           
 
         M = body.get_mass()
 
@@ -152,8 +156,9 @@ class Body:
         p2 = self.v2 = self.v2 + self.h * a[1]
 
         if body.ID==1:
-         print("X_arg :"+ str(self.x1)+" ,delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1))
-         print("Y_arg :" + str(self.x2) + " ,delta_Y :" + str(delta_y) + " v1 , v2 =" + str(self.v2) )
+         #print("X_arg :"+ str(self.x1)+" ,delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1))
+         #print("Y_arg :" + str(self.x2) + " ,delta_Y :" + str(delta_y) + " v1 , v2 =" + str(self.v2) )
+         pass
       
         
     def caluclate_velocity_center_mass(self,coord,mass):
@@ -162,12 +167,13 @@ class Body:
         """
         delta_x = coord[0] - self.x1
         delta_y = coord[1] - self.x2
-        if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
-           return
+        if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
+           print("delata_x= " + str(delta_x))
+           pass
         a = Gravity.calculate(delta_x, delta_y, mass)
 
-        p1 = self.v1 = self.v1 + self.h * a[0]
-        p2 = self.v2 = self.v2 + self.h * a[1]
+        self.v1 = self.v1 + self.h * a[0]
+        self.v2 = self.v2 + self.h * a[1]
 
         
       
@@ -403,6 +409,7 @@ class TreeBody:
 
 class Ground:
     def __init__(self):
+        print("innit Ground")
         self.bodies = []
         self.tree = TreeBody()
         self.size = 0
@@ -432,7 +439,7 @@ class Ground:
 
         z = len(self.bodies[1].x_args)
         self.size = z
-        print(z)
+        
 
     def get_size( self, n=100):
         self.n=n
@@ -457,13 +464,13 @@ class Ground:
         # particles.set_markersize(20)
         #
 
-        print("scatter:|"+str(i))   
-        print("scatter:|"+str(self.size))   
-        print("scatter:|"+str(self.increment_plot))   
+    
+        
+        q = plt.scatter(-7, -10, linewidths=0.01)
+        q = plt.scatter(7, 10, linewidths=0.001)
         for b in self.bodies:
-            # q = plt.scatter(b.x_args[i], b.y_args[i], color='black', linewidths=5)
             q = plt.scatter(b.x_args[i], b.y_args[i], linewidths=int(b.mass/100))
-            #q = plt.plot(b.y_args,b.y_args)
+          
 
         # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
         #plt.draw()
@@ -509,34 +516,6 @@ def center_mas():
     pass
 
 
-print("343!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-step = 0.06
-g = Ground()
-g.add_body(Body(1220, 1, 1, 0.01, 0.001,h=0.1))
-g.add_body(Body(7, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(3, 4, 5, -1*np.cos(np.pi / 4), -2*np.cos(np.pi / 4),h=step))
-g.add_body(Body(3333,-9, -4, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(100, -7.5, -5.2, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(32, -10, -11,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
-#g.add_body(Body(32, -5, -5, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
-#g.add_body(Body(32, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
-g.calculate(r=16000)
-
-fig = plt.figure(figsize=(6, 6))
-fig = plt.figure(figsize=(6, 6))
-
-u = lambda t, x, y: 0
-v = lambda t, x, y: -10
-#
-# point.add_force(f)
-# z = point.calculate_radius_vector(20 * np.cos(np.pi / 4), +50 * np.sin(np.pi / 4), n=700)
-# plt.plot(z[:, 0], z[:, 1])
-n = 400
-size = int(g.get_size(n))
-# print(size)
-anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
-HTML(anim.to_html5_video())
-plt.show()
 
 ###  conda install -c conda-forge ffmpeg
 

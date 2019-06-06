@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 from IPython.display import HTML
 import numpy as np
-print("gge")
-step=0.01
+print("gdasdasge")
+step=0.1
 g = Ground()
 g.add_body(Body(1200, 1, 1, 1, 0,h=step))
 g.add_body(Body(3000, 5, 1, -1, 0,h=step))
@@ -19,7 +19,7 @@ g.add_body(Body(3000, 5, 1, -1, 0,h=step))
 #g.add_body(Body(32, -5, -5, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
 #g.add_body(Body(32, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
 
-g.calculate(r=500)
+g.calculate(r=400)
 
 fig = plt.figure(figsize=(6, 6))
 fig = plt.figure(figsize=(6, 6))
