@@ -84,8 +84,8 @@ class Body:
         return np.array([self.x0_1, self.x0_2])
 
     def get_init_velocity(self):
-          """
-           the initial state of velocity
+        """
+          the initial state of velocity
         """
         return np.array([self.v0_1, self.v0_2])
 
@@ -96,27 +96,28 @@ class Body:
         return self.x_args
 
     def set_y_args(self):
-          """
-          return all y_cordinates until this moment
-          """
+        """
+         return all y_cordinates until this moment
+        """
+          
         return self.y_args
     
     
     """
-    leap from main algoritam
-    leap frog  integration main algoritams
+        leap from main algoritam
+        leap frog  integration main algoritams
      
-    step 1)
-        x = x + vx * (h / 2)
-        y = y + vy * (h / 2)
+        step 1)
+            x = x + vx * (h / 2)
+                y = y + vy * (h / 2)
      
-     step 2)
-        vx = (vx + h * u(t, x, y))/c
-        vy = (vy + h * v(t, x, y))/c
+        step 2)
+            vx = (vx + h * u(t, x, y))/c
+            vy = (vy + h * v(t, x, y))/c
     
-     step 3)   
-        x = x + vx * (h / 2)
-        y = y + vy * (h / 2)
+         step 3)   
+            x = x + vx * (h / 2)
+            y = y + vy * (h / 2)
         
         """
 
@@ -155,9 +156,20 @@ class Body:
          print("Y_arg :" + str(self.x2) + " ,delta_Y :" + str(delta_y) + " v1 , v2 =" + str(self.v2) )
       
         
-    def caluclate_Velocity_center_mass():
-        pass   
-       
+    def caluclate_velocity_center_mass(self,coord,mass):
+        """
+        calculate force acting to body using the center of mass
+        """
+        delta_x = coord[0] - self.x1
+        delta_y = coord[1] - self.x2
+        if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
+           return
+        a = Gravity.calculate(delta_x, delta_y, mass)
+
+        p1 = self.v1 = self.v1 + self.h * a[0]
+        p2 = self.v2 = self.v2 + self.h * a[1]
+
+        
       
       
 
@@ -278,10 +290,11 @@ class NodeBody:
         sum_m = c[2]  # sum of m_i
         x_coord = sum_x / sum_m
         y_coord = sum_y / sum_m
-        self.cennter_mass = np.array([x_coord, y_coord])
+        self.center_mass = np.array([x_coord, y_coord])
+        self.mass_node=sum_m
         if self.body.ID == 1:
               pass
-        return self.cennter_mass
+        return self.center_mass
 
     def use_approximation(self, node2):
         """
@@ -358,8 +371,7 @@ class TreeBody:
             return
         for i in range(len(nodes)):
             if node.use_approximation(nodes[i]):
-                pass
-            else:
+                node.body.caluclate_velocity_center_mass(nodes[i].center_mass,nodes[i].mass_node)
                 if node.body.ID != nodes[i].body.ID:
                     node.body.calculate_velocity(nodes[i].body)
                 self.calculate_V(node, nodes[i].children)
@@ -374,7 +386,8 @@ class TreeBody:
         for i in range(len(nodes)):
 
             if node.use_approximation(nodes[i]):
-                pass
+                node.body.caluclate_velocity_center_mass(nodes[i].center_mass,nodes[i].mass_node)
+
             else:
                 if node.body.ID != nodes[i].body.ID:
                     node.body.calculate_velocity(nodes[i].body)
