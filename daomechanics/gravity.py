@@ -386,16 +386,14 @@ class Ground:
         # particles.set_data(self.r[i, 0], self.r[i, 1])
         # particles.set_markersize(20)
         #
-        g= 10
-        q = plt.scatter(-g, -g, color='black', linewidths=0.1)
-        q = plt.scatter(-g, g, color='black', linewidths=0.1)
-        q = plt.scatter(g, g, color='black', linewidths=0.1)
-        q = plt.scatter(g, -g, color='black', linewidths=0.1)
 
+        print("scatter:|"+str(i))   
+        print("scatter:|"+str(self.size))   
+        print("scatter:|"+str(self.increment_plot))   
         for b in self.bodies:
             # q = plt.scatter(b.x_args[i], b.y_args[i], color='black', linewidths=5)
             q = plt.scatter(b.x_args[i], b.y_args[i], linewidths=int(b.mass/100))
-            q = plt.plot(b.y_args,b.y_args)
+            #q = plt.plot(b.y_args,b.y_args)
 
         # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
         #plt.draw()
@@ -442,17 +440,17 @@ def center_mas():
 
 
 print("343!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
+step = 0.06
 g = Ground()
-g.add_body(Body(1220, 1, 1, 0.01, 0.001,h=0.06))
-g.add_body(Body(7, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
-g.add_body(Body(3, 4, 5, -1*np.cos(np.pi / 4), -2*np.cos(np.pi / 4),h=0.06))
-g.add_body(Body(3333,-9, -4, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
-g.add_body(Body(100, -7.5, -5.2, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
-g.add_body(Body(32, -10, -11,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.06))
+g.add_body(Body(1220, 1, 1, 0.01, 0.001,h=0.1))
+g.add_body(Body(7, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
+g.add_body(Body(3, 4, 5, -1*np.cos(np.pi / 4), -2*np.cos(np.pi / 4),h=step))
+g.add_body(Body(3333,-9, -4, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
+g.add_body(Body(100, -7.5, -5.2, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
+g.add_body(Body(32, -10, -11,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
 #g.add_body(Body(32, -5, -5, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
 #g.add_body(Body(32, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
-g.calculate(r=8000)
+g.calculate(r=16000)
 
 fig = plt.figure(figsize=(6, 6))
 fig = plt.figure(figsize=(6, 6))
@@ -463,10 +461,10 @@ v = lambda t, x, y: -10
 # point.add_force(f)
 # z = point.calculate_radius_vector(20 * np.cos(np.pi / 4), +50 * np.sin(np.pi / 4), n=700)
 # plt.plot(z[:, 0], z[:, 1])
-n = 100
+n = 400
 size = int(g.get_size(n))
 # print(size)
-anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=5, fargs=(fig,), frames=n, blit=False)
+anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
 HTML(anim.to_html5_video())
 plt.show()
 
