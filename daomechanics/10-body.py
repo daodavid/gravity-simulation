@@ -40,3 +40,6 @@ size = int(g.get_size(n))
 anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
 HTML(anim.to_html5_video())
 plt.show()
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+anim.save('n-body.mp4', writer=writer)
