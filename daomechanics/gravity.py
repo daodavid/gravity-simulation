@@ -142,7 +142,7 @@ class Body:
         delta_y = body.x2 - self.x2
 
         if abs(delta_y) < 1.5 and abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
-           print("sxd1s2= " + str(delta_x))
+           #print("sxd1s2= " + str(delta_x))
            self.v1 =self.v1 - self.v1/1000
            self.v2 = self.v2 -  self.v2/1000
            return
@@ -167,8 +167,9 @@ class Body:
         """
         delta_x = coord[0] - self.x1
         delta_y = coord[1] - self.x2
+        print("Centering")
         if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
-           print("delata_x= " + str(delta_x))
+            
            pass
         a = Gravity.calculate(delta_x, delta_y, mass)
 
@@ -210,7 +211,7 @@ class NodeBody:
     every node has a 4 childs represent 4 quadrants
     
     """
-    criteria = 0.5
+    criteria = 0.6
 
     def __init__(self, body, range=[4, 4]):
 
@@ -298,6 +299,7 @@ class NodeBody:
         y_coord = sum_y / sum_m
         self.center_mass = np.array([x_coord, y_coord])
         self.mass_node=sum_m
+        print("calculating.....")
         if self.body.ID == 1:
               pass
         return self.center_mass
@@ -457,7 +459,8 @@ class Ground:
             i=self.m
 
         arg.clf()
-
+        
+        ax.patch.set_facecolor('blue')
         particles, = ax.plot([], [], 'bo', ms=6)
         # particles.set_data([], [])
         # particles.set_data(self.r[i, 0], self.r[i, 1])
@@ -469,7 +472,7 @@ class Ground:
         q = plt.scatter(-7, -10, linewidths=0.01)
         q = plt.scatter(7, 10, linewidths=0.001)
         for b in self.bodies:
-            q = plt.scatter(b.x_args[i], b.y_args[i], linewidths=int(b.mass/100))
+            q = plt.scatter(b.x_args[i], b.y_args[i],color='blue', linewidths=int(b.mass/500))
           
 
         # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
