@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Mon Jun 10 13:27:08 2019
+
+@author: David
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Mon Jun 10 09:58:53 2019
 
 @author: David
@@ -16,9 +23,9 @@ step = 0.05
 g = Ground()
 g.show_tragectory(True)
 #g.add_body(Body(1200, 5, 6,3*np.cos(np.pi / 4), -5*np.cos(np.pi / 4),h=step))
-g.add_body(Body(5000, -6,0 ,1,1,h=step))
-g.add_body(Body(5000, -6, -30,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
-g.add_body(Body(5000, -5, 30,1*np.cos(np.pi / 4), 1.5*np.cos(np.pi / 4),h=step))
+g.add_body(Body(10000, -1,-15 ,-0.000001*np.cos(np.pi / 4), 0.0000001*np.cos(np.pi / 4),h=step))
+g.add_body(Body(1000, -6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
+g.add_body(Body(1000, -7, -23,1.2*np.cos(np.pi / 4), -1.5*np.cos(np.pi / 4),h=step))
 #g.add_body(Body(5000, 3, -9,2*np.cos(np.pi / 4),np.cos(np.pi / 4),h=step))
 #g.add_body(Body(200, 10, 10,-2*np.cos(np.pi / 4), -5*np.cos(np.pi / 4),h=step))
 #g.add_body(Body(2000, 12, 12, 0.0001,0.0001,h=step))
