@@ -155,10 +155,6 @@ class Body:
         p1 = self.v1 = self.v1 + self.h * a[0]
         p2 = self.v2 = self.v2 + self.h * a[1]
 
-        if body.ID==1:
-         #print("X_arg :"+ str(self.x1)+" ,delta_X :" + str(delta_x)+" v1 , v2 ="+str(self.v1))
-         #print("Y_arg :" + str(self.x2) + " ,delta_Y :" + str(delta_y) + " v1 , v2 =" + str(self.v2) )
-         pass
       
         
     def caluclate_velocity_center_mass(self,coord,mass):
@@ -169,8 +165,7 @@ class Body:
         delta_y = coord[1] - self.x2
         print("Centering")
         if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
-            
-           pass
+         pass
         a = Gravity.calculate(delta_x, delta_y, mass)
 
         self.v1 = self.v1 + self.h * a[0]
@@ -279,7 +274,16 @@ class NodeBody:
         return delta
 
     def get_width_note(self):
-        return self.width_node
+        n=0
+        z=0
+        for i in self.children:
+            z+=self.get_distance(i)
+            n=+1
+
+        if n==0:
+            return 0
+        return z/n
+
 
     def compute_center_mass_node(self):
         """
@@ -299,7 +303,7 @@ class NodeBody:
         y_coord = sum_y / sum_m
         self.center_mass = np.array([x_coord, y_coord])
         self.mass_node=sum_m
-        print("calculating.....")
+
         if self.body.ID == 1:
               pass
         return self.center_mass
@@ -317,7 +321,7 @@ class NodeBody:
         :param node:
         :return:
         """
-        s = node2.width_node
+        s = node2.get_width_note()
         d = node2.compute_center_mass_node()
         k1 = (self.body.x1 - d[0]) ** 2
         k2 = (self.body.x1 - d[0]) ** 2
@@ -452,27 +456,27 @@ class Ground:
     def update_HTML_animation(self, i, arg):
         ax = plt.gca()
 
-        # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
-        # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
+        #q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
+        #q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
         self.m=self.m+ self.increment_plot
         if(self.m<self.size):
             i=self.m
 
         arg.clf()
         
-        ax.patch.set_facecolor('blue')
+        ax.patch.set_facecolor('black')
         particles, = ax.plot([], [], 'bo', ms=6)
         # particles.set_data([], [])
         # particles.set_data(self.r[i, 0], self.r[i, 1])
         # particles.set_markersize(20)
         #
-
+        plt.scatter(40, 40, color='red', linewidths=0.0001)
+        plt.scatter(-40, -40, color='red', linewidths=0.0001)
     
         
-        q = plt.scatter(-7, -10, linewidths=0.01)
-        q = plt.scatter(7, 10, linewidths=0.001)
+
         for b in self.bodies:
-            q = plt.scatter(b.x_args[i], b.y_args[i],color='blue', linewidths=int(b.mass/500))
+            q = plt.scatter(b.x_args[i], b.y_args[i],color='black', linewidths=int(b.mass/500))
           
 
         # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
