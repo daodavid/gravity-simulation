@@ -12,7 +12,7 @@ The Barnes-Hut algorithm
 
 
 class Gravity:
-    G = 0.01
+    G = 0.001
     
     @staticmethod
     def calculate(dx, dy, M):
@@ -23,7 +23,7 @@ class Gravity:
         """
         
         #gravity low
-        v1 = Gravity.G*M * dx / ((dx ** 2 + dy ** 2) ** (3 / 2))
+        v1 = Gravity.G*M * dx / ((dx ** 2 + dy ** 2) ** (3/2))
         v2 = Gravity.G*M * dy / ((dx ** 2 + dy ** 2) ** (3/2))
 
         return np.array([v1, v2])
@@ -141,10 +141,12 @@ class Body:
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
 
+        
+        
         if abs(delta_y) < 1.5 and abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
            #print("sxd1s2= " + str(delta_x))
-           self.v1 =self.v1 - self.v1/1000
-           self.v2 = self.v2 -  self.v2/1000
+           #self.v1 =self.v1 - self.v1/1000
+           #self.v2 = self.v2 -  self.v2/1000
            return
            
 
@@ -164,7 +166,7 @@ class Body:
         delta_x = coord[0] - self.x1
         delta_y = coord[1] - self.x2
         print("Centering")
-        if abs(delta_y) < 1 and abs(delta_x) < 1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
+        if abs(delta_y) < 1.5 and abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
          pass
         a = Gravity.calculate(delta_x, delta_y, mass)
 
@@ -206,7 +208,7 @@ class NodeBody:
     every node has a 4 childs represent 4 quadrants
     
     """
-    criteria = 0.6
+    criteria = 0.5
 
     def __init__(self, body, range=[4, 4]):
 
@@ -419,6 +421,7 @@ class Ground:
         self.bodies = []
         self.tree = TreeBody()
         self.size = 0
+        self.trajectory=False
 
     def update_coordinates(self):
         for b in self.bodies:
@@ -474,9 +477,11 @@ class Ground:
         plt.scatter(-40, -40, color='red', linewidths=0.0001)
     
         
-
+         
         for b in self.bodies:
             q = plt.scatter(b.x_args[i], b.y_args[i],color='black', linewidths=int(b.mass/500))
+            if self.trajectory:
+               plt.plot(b.x_args, b.y_args)
           
 
         # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
@@ -489,6 +494,9 @@ class Ground:
 
     def print(self):
         self.tree.print()
+        
+    def show_tragectory(self,b):
+       self.trajectory=b
 
 
 """
