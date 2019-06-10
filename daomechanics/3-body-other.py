@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Mon Jun 10 13:31:06 2019
+
+@author: David
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Mon Jun 10 09:58:53 2019
 
 @author: David
