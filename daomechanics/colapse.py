@@ -1,5 +1,26 @@
 # -*- coding: utf-8 -*-
 """
+Created on Tue Jun 11 11:03:51 2019
+
+@author: David
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jun 11 10:57:39 2019
+
+@author: David
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun 10 15:23:11 2019
+
+@author: David
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Mon Jun 10 14:45:12 2019
 
 @author: David
@@ -46,38 +67,38 @@ print("WOW WOW OWWO!!")
 
 
 a = uniform(2,10)
-step = 0.1
+step = 0.01
 g = Ground()
 
 
-#g.add_body(Body(50000, 0,0 , 0.001, 0.00001 ,h=step))
-for i in range(200):
-    v1 = uniform(0,70)
+g.add_body(Body(50000, 0,0 , 0.001, 0.00001 ,h=step))
+for i in range(300):
+    v1 = uniform(50,70)
     v2 =uniform(50,70)
-    x1 = uniform(40,130)
-    x2 =uniform(40,130)
+    x1 = uniform(40,60)
+    x2 =uniform(40,80)
     m = uniform(500,2500)
-    g.add_body(Body(m, x1,x2 , -v1*np.cos(np.pi*(v1/180))/20, -v2*np.cos(np.pi*(v1/180))/10 ,h=step))
+    g.add_body(Body(m, x1,x2 , -v1*np.cos(np.pi*(v1/180)), -v2*np.cos(np.pi*(v1/180)) ,h=step))
     
     
 
-for i in range(100):
-    v1 = uniform(-30,30)
-    v2 = uniform(1,30)
-    x1 = uniform(-50,50)
-    x2 = uniform(-50,50)
-    m  =  uniform(50,2150)
-    g.add_body(Body(m, x1,x2 , 4*np.cos(np.pi*(v1/180)), 4*np.cos(np.pi*(v1/180) ),h=step))
+#for i in range(100):
+#    v1 = uniform(-30,30)
+#    v2 = uniform(1,30)
+#    x1 = uniform(-50,50)
+#    x2 = uniform(-50,50)
+#    m  =  uniform(50,2150)
+#    g.add_body(Body(m, x1,x2 , 4*np.cos(np.pi*(v1/180)), 4*np.cos(np.pi*(v1/180) ),h=step))
     
-for i in range(200):
-     v1 = uniform(0,90)
+for i in range(300):
+     v1 = uniform(40,70)
      v2 =uniform(50,70)
-     x1 = uniform(-50,-120)
-     x2 =uniform(-50,-120)
+     x1 = uniform(-40,-100)
+     x2 =uniform(-40,-100)
      m = uniform(500,2150)
-     g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/20, v2*np.cos(np.pi*(v1/180))/10,h=step))
+     g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180)), v2*np.cos(np.pi*(v1/180)),h=step))
     
-g.calculate(r=2000)
+g.calculate(r=2500)
    
     
 
@@ -91,13 +112,13 @@ v = lambda t, x, y: -10
 # point.add_force(f)
 # z = point.calculate_radius_vector(20 * np.cos(np.pi / 4), +50 * np.sin(np.pi / 4), n=700)
 # plt.plot(z[:, 0], z[:, 1])
-n = 500
+n = 400
 size = int(g.get_size(n))
 # print(size)
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
-anim.save('video/galaxy321_mp4', writer=writer)
+anim.save('video/black_colapcse.mp4', writer=writer)
 HTML(anim.to_html5_video())
 

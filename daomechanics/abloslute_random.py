@@ -91,6 +91,6 @@ Writer = animation.writers['ffmpeg']
 writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
-anim.save('video/galaxy3_mp4', writer=writer)
+anim.save('video/random1000elements3_mp4', writer=writer)
 HTML(anim.to_html5_video())
 

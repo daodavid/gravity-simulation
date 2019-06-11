@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Mon Jun 10 15:23:11 2019
+
+@author: David
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Mon Jun 10 14:45:12 2019
 
 @author: David
@@ -51,31 +58,39 @@ g = Ground()
 
 
 #g.add_body(Body(50000, 0,0 , 0.001, 0.00001 ,h=step))
-for i in range(200):
-    v1 = uniform(0,70)
+for i in range(300):
+    v1 = uniform(90,180)
     v2 =uniform(50,70)
-    x1 = uniform(40,130)
-    x2 =uniform(40,130)
+    x1 = uniform(40,60)
+    x2 =uniform(40,80)
     m = uniform(500,2500)
     g.add_body(Body(m, x1,x2 , -v1*np.cos(np.pi*(v1/180))/20, -v2*np.cos(np.pi*(v1/180))/10 ,h=step))
     
     
 
 for i in range(100):
-    v1 = uniform(-30,30)
-    v2 = uniform(1,30)
+    v1 = uniform(30,45)
+    v2 = uniform(30,40)
     x1 = uniform(-50,50)
     x2 = uniform(-50,50)
     m  =  uniform(50,2150)
     g.add_body(Body(m, x1,x2 , 4*np.cos(np.pi*(v1/180)), 4*np.cos(np.pi*(v1/180) ),h=step))
     
-for i in range(200):
+for i in range(300):
      v1 = uniform(0,90)
      v2 =uniform(50,70)
-     x1 = uniform(-50,-120)
-     x2 =uniform(-50,-120)
+     x1 = uniform(-50,-80)
+     x2 =uniform(-50,-60)
      m = uniform(500,2150)
      g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/20, v2*np.cos(np.pi*(v1/180))/10,h=step))
+     
+for i in range(300):
+     v1 = uniform(45,20)
+     v2 =uniform(50,70)
+     x1 = uniform(--80,-90)
+     x2 =uniform(-90,-100)
+     m = uniform(500,2150)
+     g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/20, v2*np.cos(np.pi*(v1/180))/10,h=step))     
     
 g.calculate(r=2000)
    
@@ -98,6 +113,6 @@ Writer = animation.writers['ffmpeg']
 writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
-anim.save('video/galaxy321_mp4', writer=writer)
+anim.save('video/wow.mp4', writer=writer)
 HTML(anim.to_html5_video())
 
