@@ -15,16 +15,10 @@ print("WOW WOW OWWO!!")
 step = 0.05
 g = Ground()
 g.show_tragectory(True)
-#g.add_body(Body(1200, 5, 6,3*np.cos(np.pi / 4), -5*np.cos(np.pi / 4),h=step))
-g.add_body(Body(10000, -1,-15 ,-0.00001*np.cos(np.pi / 4), 0.0001*np.cos(np.pi / 4),h=step))
-g.add_body(Body(1000, -6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
-#g.add_body(Body(1000, -6, -17,-0.5*np.cos(np.pi / 4), 0.2*np.cos(np.pi / 4),h=step))
-#g.add_body(Body(5000, 3, -9,2*np.cos(np.pi / 4),np.cos(np.pi / 4),h=step))
-#g.add_body(Body(200, 10, 10,-2*np.cos(np.pi / 4), -5*np.cos(np.pi / 4),h=step))
-#g.add_body(Body(2000, 12, 12, 0.0001,0.0001,h=step))
-#g.add_body(Body(5000, 3, 5, -1*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=step))
-#g.add_body(Body(32, -5, -5, -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
-#g.add_body(Body(32, 3, 4,  -3*np.cos(np.pi / 4), -1*np.cos(np.pi / 4),h=0.1))
+
+g.add_body(Body(100000, -1,-15 ,-0.00001*np.cos(np.pi / 4), 0.0001*np.cos(np.pi / 4),h=step))
+g.add_body(Body(10000, -6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
+
 g.calculate(r=6000)
 
 fig = plt.figure(figsize=(6, 6))

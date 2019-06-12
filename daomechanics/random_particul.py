@@ -14,19 +14,28 @@ step = 0.01
 g = Ground()
 
 
-g.add_body(Body(50000, 0,0 , 0.001, 0.00001 ,h=step))
+g.add_body(Body(90000, 20,20 , 0.001, 0.00001 ,h=step))
+
+g.add_body(Body(900000, -10,-10 , 0.001, 0.00001 ,h=step))
 for i in range(600):
     v1 = uniform(0,360)
     v2 = uniform(0,360)
     x1 = uniform(-30,40)
     x2 =uniform(-30,40)
     m = uniform(500,1000)
-    g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/50, v2*np.cos(np.pi*(v1/180))/20 ,h=step))
+    g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/100, v2*np.cos(np.pi*(v1/180))/100 ,h=step))
     
     
+for i in range(600):
+    v1 = uniform(0,360)
+    v2 = uniform(0,360)
+    x1 = uniform(-30,20)
+    x2 =uniform(-30,40)
+    m = uniform(1000,10000)
+    g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/10000, v2*np.cos(np.pi*(v1/180))/10000 ,h=step))
 
-
-    
+g.add_body(Body(100000, 10,10 , 0.001, 0.00001 ,h=step))   
+g.add_body(Body(200000, -20,20 , 0.001, -0.00001 ,h=step)) 
 g.calculate(r=3000)
 
 fig = plt.figure(figsize=(6, 6))

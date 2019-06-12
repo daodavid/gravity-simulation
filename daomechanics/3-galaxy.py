@@ -50,33 +50,35 @@ step = 0.1
 g = Ground()
 
 
-#g.add_body(Body(50000, 0,0 , 0.001, 0.00001 ,h=step))
-for i in range(200):
+
+for i in range(150):
     v1 = uniform(0,70)
     v2 =uniform(50,70)
-    x1 = uniform(40,130)
+    x1 = uniform(40,80)
     x2 =uniform(40,130)
-    m = uniform(500,2500)
-    g.add_body(Body(m, x1,x2 , -v1*np.cos(np.pi*(v1/180))/20, -v2*np.cos(np.pi*(v1/180))/10 ,h=step))
+    m = uniform(500,800)
+    g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/20, -v2*np.cos(np.pi*(v1/180))/10 ,h=step))
     
-    
+g.add_body(Body(5000, 45,45, 3, -2*np.cos(np.pi*(v1/45)),h=step))    
 
 for i in range(100):
-    v1 = uniform(-30,30)
-    v2 = uniform(1,30)
-    x1 = uniform(-50,50)
-    x2 = uniform(-50,50)
-    m  =  uniform(50,2150)
-    g.add_body(Body(m, x1,x2 , 4*np.cos(np.pi*(v1/180)), 4*np.cos(np.pi*(v1/180) ),h=step))
+    v1 = uniform(0,360)
+    v2 = uniform(0,360)
+    x1 = uniform(-25,25)
+    x2 = uniform(-20,20)
+    m  =  uniform(2000,2150)
+    g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/100, v2*np.cos(np.pi*(v1/180) )/50,h=step))
+g.add_body(Body(7000, 0,0, 0.0001,0.0001,h=step)) 	
     
-for i in range(200):
+for i in range(150):
      v1 = uniform(0,90)
      v2 =uniform(50,70)
-     x1 = uniform(-50,-120)
-     x2 =uniform(-50,-120)
-     m = uniform(500,2150)
+     x1 = uniform(40,80)
+     x1 = uniform(-40,-80)
+     m = uniform(500,1000)
      g.add_body(Body(m, x1,x2 , v1*np.cos(np.pi*(v1/180))/20, v2*np.cos(np.pi*(v1/180))/10,h=step))
-    
+
+g.add_body(Body(5000, 45,45, 3, 2*np.cos(np.pi*(v1/45)) ,h=step))  	 
 g.calculate(r=2000)
    
     
@@ -98,6 +100,6 @@ Writer = animation.writers['ffmpeg']
 writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
-anim.save('video/galaxy321_mp4', writer=writer)
+anim.save('video/galaxy321.mp4', writer=writer)
 HTML(anim.to_html5_video())
 

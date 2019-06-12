@@ -279,8 +279,10 @@ class NodeBody:
         n=0
         z=0
         for i in self.children:
-            z+=self.get_distance(i)
-            n=+1
+           if z<self.get_distance(i):
+                z=self.get_distance(i)
+                print(',,')
+        return z   
 
         if n==0:
             return 0
@@ -476,12 +478,17 @@ class Ground:
         plt.scatter(40, 40, color='red', linewidths=0.0001)
         plt.scatter(-40, -40, color='red', linewidths=0.0001)
     
+        k=500
         
-         
+		   
         for b in self.bodies:
-            q = plt.scatter(b.x_args[i], b.y_args[i],color='black', linewidths=int(b.mass/500))
-            if self.trajectory:
+            
+            if b.mass>10000:
                plt.plot(b.x_args, b.y_args)
+            q = plt.scatter(b.x_args[i], b.y_args[i],color='magenta', linewidths=int(b.mass/(k*500)))
+           
+#            if self.trajectory:
+#               plt.plot(b.x_args, b.y_args)
           
 
         # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')

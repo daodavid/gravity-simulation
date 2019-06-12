@@ -58,12 +58,12 @@ g = Ground()
 
 
 g.add_body(Body(50000, 0,0 , 0.001, 0.00001 ,h=step))
-for i in range(1000):
-    v1 = uniform(-180,180)
-    v2 = uniform(-180,180)
-    x1 = uniform(-100,100)
-    x2 =uniform(-100,100)
-    m = uniform(100,2500)
+for i in range(500):
+    v1 = uniform(0,360)
+    v2 = uniform(0,360)
+    x1 = uniform(-20,20)
+    x2 =uniform(-30,30)
+    m = uniform(1000,2000)
     g.add_body(Body(m, x1,x2 , -v1*np.cos(np.pi*(v1/180))/20, -v2*np.cos(np.pi*(v1/180))/10 ,h=step))
     
     
@@ -91,6 +91,6 @@ Writer = animation.writers['ffmpeg']
 writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 anim = animation.FuncAnimation(plt.gcf(), g.update_HTML_animation, interval=1, fargs=(fig,), frames=n, blit=False)
-anim.save('video/random1000elements3_mp4', writer=writer)
+anim.save('video/random1000elements333_mp4', writer=writer)
 HTML(anim.to_html5_video())
 
