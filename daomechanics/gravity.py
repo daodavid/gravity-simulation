@@ -13,7 +13,7 @@ The Barnes-Hut algorithm
 
 class Gravity:
     G = 0.001
-    
+
     @staticmethod
     def calculate(dx, dy, M):
         """
@@ -21,7 +21,7 @@ class Gravity:
         dy is distance between Obj1 and Obj2 measured under Y axis
         M is the mass of obj2
         """
-        
+
         #gravity low
         v1 = Gravity.G*M * dx / ((dx ** 2 + dy ** 2) ** (3/2))
         v2 = Gravity.G*M * dy / ((dx ** 2 + dy ** 2) ** (3/2))
@@ -30,7 +30,7 @@ class Gravity:
 
 
 class Body:
-    
+
     """
     The body is the material point.For the material point we do not consider its form,
     the only meaningful parameters are,mass and radius vector
@@ -42,9 +42,9 @@ class Body:
         self.x1 = x0  #current lenght of X coordinate
         self.x2 = y0  #current lenght of Y coordinate
         self.v1 = v0_1 ##current velocity on X coord
-        self.v2 = v0_2 # current velocity on Y coord 
+        self.v2 = v0_2 # current velocity on Y coord
         self.x_args = [x0] #list of moment state of X coords
-        self.y_args = [y0]  
+        self.y_args = [y0]
         self.v1_args = [v0_1] #list of velocities on X coords
         self.v2_args = [v0_2]  #list of velocities on Y coords
         Body.ID += 1
@@ -99,10 +99,10 @@ class Body:
         """
          return all y_cordinates until this moment
         """
-          
+
         return self.y_args
-    
-    
+
+
     """
         leap from main algoritam
         leap frog  integration main algoritams
@@ -134,48 +134,61 @@ class Body:
         """
         step 2 of leapfrog integration.
         Here will be calculated the new velocity parameters
-        in way that every force will contribute for changing of velocaty of body 
+        in way that every force will contribute for changing of velocaty of body
          """
-        
-       
+
+
         delta_x = body.x1 - self.x1
         delta_y = body.x2 - self.x2
 
-        
-        
-        if abs(delta_y) < 1.5 and abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
-           #print("sxd1s2= " + str(delta_x))
-           #self.v1 =self.v1 - self.v1/1000
-           #self.v2 = self.v2 -  self.v2/1000
+
+
+        if abs(delta_y) < 1.5 or abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinity
+
            return
-           
+
 
         M = body.get_mass()
 
         a = Gravity.calculate(delta_x, delta_y, M)
+        step = self.h
+        if abs(a[0])>30 or abs(a[1])>30:
+            step = self.h/100000
+            print("St")
+        p1 = self.v1 = self.v1 + step * a[0]
+        p2 = self.v2 = self.v2 + step * a[1]
 
-        p1 = self.v1 = self.v1 + self.h * a[0]
-        p2 = self.v2 = self.v2 + self.h * a[1]
 
-      
-        
+        if self.v1>10 or self.v2>10:
+           print(self.v1)
+           print(self.v2)
+
+
+
     def caluclate_velocity_center_mass(self,coord,mass):
         """
         calculate force acting to body using the center of mass
         """
         delta_x = coord[0] - self.x1
         delta_y = coord[1] - self.x2
-        print("Centering")
-        if abs(delta_y) < 1.5 and abs(delta_x) < 1.5:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
-         pass
+
+        if abs(delta_y) <1 and abs(delta_x) <1:  ### in the program we do not consider the law of conservation of energy,theorfore ,the calculation is skipp in verry small distcance bewtween object ,because the velocity become infinit
+           return
         a = Gravity.calculate(delta_x, delta_y, mass)
+        step = self.h
+        if abs(a[0])>30 or abs(a[1])>30:
+            print("St")
+            step = self.h/100000
+        p1 = self.v1 = self.v1 + step * a[0]
+        p2 = self.v2 = self.v2 + step * a[1]
 
-        self.v1 = self.v1 + self.h * a[0]
-        self.v2 = self.v2 + self.h * a[1]
 
-        
-      
-      
+
+
+
+
+
+
 
     def reculculate_cordinates(self):
         """
@@ -196,17 +209,17 @@ class Body:
 
 
 class NodeBody:
-    
+
     """
     Node ,leaf
-    
-    The objects of this class 
+
+    The objects of this class
     contain the body and its childs in Tree
-    
+
     This class coutains the main logic of Barnes-Hut algoritams
-    
+
     every node has a 4 childs represent 4 quadrants
-    
+
     """
     criteria = 0.5
 
@@ -238,7 +251,7 @@ class NodeBody:
         """
         insert into tree depends on comparing of coordinates
         """
-        
+
         if body.x1 <= node.body.x1 and body.x2 >= node.body.x2:
             if node.Q_11 is None:
                 node.Q_11 = NodeBody(body)
@@ -281,17 +294,13 @@ class NodeBody:
         for i in self.children:
            if z<self.get_distance(i):
                 z=self.get_distance(i)
-                print(',,')
-        return z   
 
-        if n==0:
-            return 0
-        return z/n
+        return z
 
 
     def compute_center_mass_node(self):
         """
-        
+
         recursivly compute center of mass of one node and its leafs
         R = Sum (x_i*m_iE1 + y_i*mi*E2)/M
         where M = sum m_i
@@ -318,8 +327,8 @@ class NodeBody:
         comparing W/R
         where W - width of the region of node
         R distance between body and node
-        
-        this method do diciacion if the calulation of force will be 
+
+        this method do diciacion if the calulation of force will be
         acording only one body of node or the hole bodies belongs to the node as center of mass
         :param distance:
         :param node:
@@ -391,7 +400,7 @@ class TreeBody:
                 if node.body.ID != nodes[i].body.ID:
                     node.body.calculate_velocity(nodes[i].body)
                 self.calculate_V(node, nodes[i].children)
- 
+
 
     def calculate_Roo(self, node):
         nodes = self.root.children
@@ -438,7 +447,7 @@ class Ground:
         self.tree.add_element(body)
 
     def calculate(self, r=900):
-        
+
         start = time.time()
         for i in range(r):
             self.update_half_coordinates()
@@ -450,7 +459,7 @@ class Ground:
 
         z = len(self.bodies[1].x_args)
         self.size = z
-        
+
 
     def get_size( self, n=100):
         self.n=n
@@ -468,31 +477,32 @@ class Ground:
             i=self.m
 
         arg.clf()
-        
-        ax.patch.set_facecolor('black')
+        #plt.figure(figsize=(6, 6))
+
+        ax.patch.set_facecolor('indigo')
         particles, = ax.plot([], [], 'bo', ms=6)
         # particles.set_data([], [])
         # particles.set_data(self.r[i, 0], self.r[i, 1])
         # particles.set_markersize(20)
         #
-        plt.scatter(40, 40, color='red', linewidths=0.0001)
-        plt.scatter(-40, -40, color='red', linewidths=0.0001)
-    
-        k=500
-        
-		   
-        for b in self.bodies:
-            
-            if b.mass>10000:
-               plt.plot(b.x_args, b.y_args)
-            q = plt.scatter(b.x_args[i], b.y_args[i],color='magenta', linewidths=int(b.mass/(k*500)))
-           
-#            if self.trajectory:
-#               plt.plot(b.x_args, b.y_args)
-          
+        plt.scatter(20, 20, color='red', linewidths=0.0001)
+        plt.scatter(-20, -20, color='red', linewidths=0.0001)
 
-        # z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
-        #plt.draw()
+
+
+
+        for b in self.bodies:
+            k=1
+            if b.mass>9000:
+               k=1000
+
+            q = plt.scatter(b.x_args[i], b.y_args[i],color='indigo', linewidths=int(b.mass/(k*500)))
+            if self.trajectory:
+              #plt.plot(np.array(b.x_args)[:, 0],np.array( b.y_args[:, 1]), color='blue')
+              pass
+
+
+
         ax.spines['left'].set_position('zero')
         ax.spines['right'].set_color('none')
         ax.spines['top'].set_color('none')
@@ -501,7 +511,7 @@ class Ground:
 
     def print(self):
         self.tree.print()
-        
+
     def show_tragectory(self,b):
        self.trajectory=b
 
