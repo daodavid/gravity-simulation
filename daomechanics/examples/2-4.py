@@ -11,7 +11,7 @@ from IPython.display import HTML
 from random import *
 import numpy as np
 
-from gravity import *
+from daomechanics.gravity import *
 g = Ground()
 
 
