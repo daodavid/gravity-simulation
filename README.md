@@ -1,4 +1,4 @@
-# N_BODY_PROBLEM_Barnes-Hut-ALGORITAM
+# N_BODY_PROBLEM_Barnes-Hut-algorithm
 
 
 
