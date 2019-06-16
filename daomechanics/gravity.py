@@ -12,7 +12,7 @@ The Barnes-Hut algorithm
 
 
 class Gravity:
-    G = 0.001
+    G = 0.001  ###constant G
 
     @staticmethod
     def calculate(dx, dy, M):
@@ -427,6 +427,9 @@ class TreeBody:
 
 
 class Ground:
+"""
+Ground ,hold every particult
+"""
     def __init__(self):
         print("innit Ground")
         self.bodies = []
