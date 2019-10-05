@@ -8,16 +8,8 @@
 
 [logo]: http://http:/github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true "TREE"
 
-![alt text](http://http:/github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true alt="example1.gif">)
 
-![stack Overflow](http://lmsotfy.com/so.png)
-![stack Overflow](http://http:/github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true)
-
-![stack Overflow](/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true)
-
-
-![alt text](https://raw.githubusercontent.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
-[logo](https://raw.githubusercontent.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
+![Cat](https://raw.githubusercontent.com/{Daodavid93}/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
 
 
 
