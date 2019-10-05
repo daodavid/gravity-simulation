@@ -1,4 +1,6 @@
-# N_BODY_PROBLEM_Barnes-Hut-algorithm
+<head>
+  <title>N-bodies problem</title>
+</head>
 
 
 
@@ -8,19 +10,4 @@ Project [rhc]: https://nbviewer.jupyter.org/github/Daodavid93/N_BODY_PROBLEM_Bar
 
 
 
-{::nomarkdown}
-
-<video width="400" controls>
-  <source src="https://github.com/Daodavid93/N_BODY_PROBLEM_Barnes-Hut-ALGORITAM/blob/master/video/3-3.mp4" type="video/mp4">
-  <source src="mov_bbb.ogg" type="video/ogg">
-  Your browser does not support HTML5 video.
-</video>
-
-
-<video width="400" controls>
-  <source src="/Daodavid93/N_BODY_PROBLEM_Barnes-Hut-ALGORITAM/blob/master/video/3-3.mp4" type="video/mp4">
-  <source src="mov_bbb.ogg" type="video/ogg">
-  Your browser does not support HTML5 video.
-</video>
-
-{:/}
+<a color='blue' href="https://nbviewer.jupyter.org/github/Daodavid93/N_BODY_PROBLEM_Barnes-Hut-ALGORITAM/blob/master/n-bodies-project.ipynb">Visit W3Schools</a>
