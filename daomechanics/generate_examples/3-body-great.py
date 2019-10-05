@@ -15,7 +15,7 @@ g = Ground()
 g.show_tragectory(True)
 
 
-### generate 3 body with different mass 
+### generate 3 body with different mass
 g.add_body(Body(10000, -1,-15 ,-0.000001*np.cos(np.pi / 4), 0.0000001*np.cos(np.pi / 4),h=step))
 g.add_body(Body(1000, -6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4),h=step))
 g.add_body(Body(1000, -7, -23,1.2*np.cos(np.pi / 4), -1.5*np.cos(np.pi / 4),h=step))

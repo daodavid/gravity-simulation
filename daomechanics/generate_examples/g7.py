@@ -1,25 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 14 08:42:09 2019
 
-@author: David
-"""
 
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 14 08:41:33 2019
 
-@author: David
-"""
 
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 13 20:10:27 2019
-
-@author: David
-"""
-
-# -*- coding: utf-8 -*-
 """
 Created on Thu Jun 13 20:09:15 2019
 
@@ -31,7 +13,7 @@ from matplotlib import animation, rc
 from IPython.display import HTML
 from random import *
 import numpy as np
-from gravity import *
+from daomechanics.gravity import *
     
     
 print('helsslo')
@@ -40,7 +22,7 @@ g = Ground()
 
 step = 0.1
     
-
+# generate 300 particles with speed velocity  40-  48
 for i in range(300):
     v1 = uniform(40,48)
     v2 = uniform(45,48)
@@ -97,10 +79,7 @@ fig = plt.figure(figsize=(6, 6))
 
 u = lambda t, x, y: 0
 v = lambda t, x, y: -10
-#
-# point.add_force(f)
-# z = point.calculate_radius_vector(20 * np.cos(np.pi / 4), +50 * np.sin(np.pi / 4), n=700)
-# plt.plot(z[:, 0], z[:, 1])
+
 n = 300
 size = int(g.get_size(n))
 # print(size)

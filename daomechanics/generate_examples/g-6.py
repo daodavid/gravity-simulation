@@ -1,18 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 14 08:41:33 2019
-
-@author: David
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 13 20:10:27 2019
-
-@author: David
-"""
-
-# -*- coding: utf-8 -*-
 """
 Created on Thu Jun 13 20:09:15 2019
 
@@ -24,7 +9,7 @@ from matplotlib import animation, rc
 from IPython.display import HTML
 from random import *
 import numpy as np
-from gravity import *
+from daomechanics.gravity import *
     
     
 print('helsslo')
