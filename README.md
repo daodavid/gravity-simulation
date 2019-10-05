@@ -10,6 +10,11 @@
 
 ![alt text](http://http:/github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true alt="example1.gif">)
 
+![stack Overflow](http://lmsotfy.com/so.png)
+![stack Overflow](http://http:/github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true)
+
+![stack Overflow](/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true)
+
 
 
 
