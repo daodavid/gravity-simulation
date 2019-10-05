@@ -7,10 +7,9 @@
 #### LINK :  <a color='blue' href="https://nbviewer.jupyter.org/github/Daodavid93/N_BODY_PROBLEM_Barnes-Hut-ALGORITAM/blob/master/n-bodies-project.ipynb">N-bodies problem and Barnes-Hut algorithm 
 </a>
 
-[logo]: http://http:/github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true "TREE"
 
 
-![Cat](htstps://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
+![Cat](https://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
 
 
 
