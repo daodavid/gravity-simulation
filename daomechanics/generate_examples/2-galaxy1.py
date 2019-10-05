@@ -1,15 +1,14 @@
-import matplotlib.pyplot as plt
-from matplotlib import animation, rc
-from IPython.display import HTML
 from random import *
 import numpy as np
-from gravity import *
+from daomechanics.gravity import *
 g = Ground()
+"""
 
+Example of two galaxy 
+"""
 
-print('hello')
 step = 0.1
-    
+# Generate random particles
 for i in range(250):
     v1 = uniform(45,48)
     v2 = uniform(45,48)
@@ -55,13 +54,9 @@ fig = plt.figure(figsize=(6, 6))
 
 u = lambda t, x, y: 0
 v = lambda t, x, y: -10
-#
-# point.add_force(f)
-# z = point.calculate_radius_vector(20 * np.cos(np.pi / 4), +50 * np.sin(np.pi / 4), n=700)
-# plt.plot(z[:, 0], z[:, 1])
 n = 300
 size = int(g.get_size(n))
-# print(size)
+
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
