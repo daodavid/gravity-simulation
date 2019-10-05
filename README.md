@@ -10,7 +10,7 @@
 [logo]: http://http:/github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif?raw=true "TREE"
 
 
-![Cat](https://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
+![Cat](htstps://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
 
 
 
