@@ -9,10 +9,10 @@ import numpy as np
 https://beltoforion.de/article.php?a=barnes-hut-galaxy-simulator
 The Barnes-Hut algorithm
 """
-
+###IMPLEMENTATION OF ALGORITHM
 
 class Gravity:
-    G = 0.001  ###constant G
+    G = 0.001  ###constant G gravity
 
     @staticmethod
     def calculate(dx, dy, M):
@@ -20,7 +20,9 @@ class Gravity:
         dx is distance between Obj1 and Obj2 measured under X axis
         dy is distance between Obj1 and Obj2 measured under Y axis
         M is the mass of obj2
-        """
+
+        calculation of gravity by between particles
+         """
 
         #gravity low
         v1 = Gravity.G*M * dx / ((dx ** 2 + dy ** 2) ** (3/2))
@@ -32,10 +34,12 @@ class Gravity:
 class Body:
 
     """
-    The body is the material point.For the material point we do not consider its form,
+    The BODY REPRESENTS THE  PARTICLE
+    contains fields Mass,Initial Velosity ,Initial X and Y wihc belongs 2 dimensional euclidian space
+        The body is the material point.For the material point we do not consider its form,
     the only meaningful parameters are,mass and radius vector
     """
-    ID = 0
+    ID = 0  ###Unique identifier for PARTICLE
 
     def __init__(self, mass, x0, y0, v0_1, v0_2, h=0.001):
         self.mass = mass
@@ -104,7 +108,8 @@ class Body:
 
 
     """
-        leap from main algoritam
+    
+        leap frog  main math description
         leap frog  integration main algoritams
      
         step 1)
@@ -427,9 +432,9 @@ class TreeBody:
 
 
 class Ground:
-"""
-Ground ,hold every particult
-"""
+    """
+      Ground ,holds every particles wich interact each with other
+    """
     def __init__(self):
         print("innit Ground")
         self.bodies = []
@@ -473,21 +478,16 @@ Ground ,hold every particult
     def update_HTML_animation(self, i, arg):
         ax = plt.gca()
 
-        #q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
+        #q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')  show vector speed
         #q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
         self.m=self.m+ self.increment_plot
         if(self.m<self.size):
             i=self.m
 
         arg.clf()
-        #plt.figure(figsize=(6, 6))
 
         ax.patch.set_facecolor('indigo')
         particles, = ax.plot([], [], 'bo', ms=6)
-        # particles.set_data([], [])
-        # particles.set_data(self.r[i, 0], self.r[i, 1])
-        # particles.set_markersize(20)
-        #
         plt.scatter(20, 20, color='red', linewidths=0.0001)
         plt.scatter(-20, -20, color='red', linewidths=0.0001)
 
@@ -540,15 +540,19 @@ the influence of θ on the number of force computations
 
 k = d/r
 
+
+
+def center_mas():
+    pass
 """
+
+#REFERENCES:
 
 
 ###https://www.maths.tcd.ie/~btyrrel/nbody.pdf
 ### http://algorithm-interest-group.me/assets/slides/barnes_hut.pdf
 ### https://www.cs.vu.nl/ibis/papers/nijhuis_barnes_2004.pdf
 ##http://www.cs.hut.fi/~ctl/NBody.pdf
-def center_mas():
-    pass
 
 
 
