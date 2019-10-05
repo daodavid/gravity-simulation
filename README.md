@@ -11,6 +11,6 @@
 
 ![Cat](https://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/example1.gif)
 
-
+![](https://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/video/3-bodies.gif)
 
 
