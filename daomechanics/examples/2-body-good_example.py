@@ -10,8 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 from IPython.display import HTML
 import numpy as np
-print("gdasdasge")
-print("WOW WOW OWWO!!")
+
 step = 0.05
 g = Ground()
 g.show_tragectory(True)

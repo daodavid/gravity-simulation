@@ -1,0 +1,47 @@
+import numpy as np
+from math import sin as sn
+import matplotlib.pyplot as plt
+import time
+from datetime import datetime 
+from numba import vectorize
+
+
+
+def calc(X,Y):
+    result = [];
+    k = 1
+    return 1
+
+
+
+
+
+a = np.linspace(1,12220,21220000)
+
+
+
+def b(a):
+    result = []
+    for i in  a:
+        result.append(calc(i,a))
+
+    return np.array(result)  
+
+
+start_time = datetime.now() 
+
+def END(start_time):
+    time_elapsed = datetime.now() - start_time
+    time_elapsed = time_elapsed.total_seconds() * 1000
+    print('Time elapsed vectorized (hh:mm:ss.ms) {}'.format(time_elapsed))
+
+t = datetime.now()  
+b(a)
+END(t)
+
+vect = np.vectorize(calc,excluded=['Y'])
+
+
+t = datetime.now() 
+vect(X=a,Y=1)
+END(t)  
