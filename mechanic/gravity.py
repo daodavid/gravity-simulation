@@ -117,7 +117,7 @@ class GravityField:
                 warnings.warn("delta r < approx_error ,the force is skipp ".format(self.approx_error))
                 ##replaceee only this symbol
                 #devider_modul_r = 100000
-                devider_modul_r = 2
+                devider_modul_r = 9000
 
 
             g1 = 100*np.sum(delta_r_M[:, 0]*(1/devider_modul_r))
@@ -157,7 +157,7 @@ class GravityField:
             self.leaf_frog_step1()
             self.leap_frog_step2()
         self.save()
-        end =datetime.now() - start
+        end = datetime.now() - start
         print('all cal process {}'.format(end) )
 
 
@@ -170,20 +170,33 @@ class GravityField:
 
     def update_anim(self, i, arg):
         plt.style.use('dark_background')
-        x, y = self.X_cordinates, self.Y_cordinates
+    
         ax = plt.gca()
         arg.clf()
         k = self.frame_step*i
         n_bodies =  self.number_of_bodies
         linewidth = 1/self.number_of_bodies
-        for j in range(x.shape[1]):
+
+        x, y = self.X_cordinates, self.Y_cordinates
+
+        X,Y  = self.x_cordinates,self.y_cordinates
+
+        
+        # for j in range(x.shape[1]):
+        '''
+        old imp. it's work
+        '''
            
             
-            body = 'body_{}'.format(j)
-            #print(x[body][k])
-            if(self.show_trajectory) :
-                plt.plot(np.array(x[body]), np.array(y[body]),color='indigo',linewidth=linewidth)
-            plt.scatter(x[body][k], y[body][k],color='white')
+        #     body = 'body_{}'.format(j)
+        #     if(self.show_trajectory) :
+        #         plt.plot(np.array(x[body]), np.array(y[body]),color='red',linewidth=linewidth)
+        #     plt.scatter(x[body][k], y[body][k],color='white')
+
+        
+        x_plot,y_plot =X[k],Y[k]
+        plt.scatter(x_plot, y_plot ,color='skyblue')
+        plt.plot(x, y ,color='skyblue',linewidth=linewidth/2)    
             
         #q = plt.scatter(self.X_cordinates, self.Y_cordinates, color='indigo', linewidths=None)
 
@@ -201,13 +214,14 @@ class GravityField:
         self.show_trajectory =show_trajectory
 
         print('saving of animation')
+        #fig = add_subplot(111, projection='3d')
         fig = plt.figure(figsize=(6, 6))
         plt.style.use('dark_background')
 
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
-        anim = animation.FuncAnimation(plt.gcf(), field.update_anim, interval=1, fargs=(
+        anim = animation.FuncAnimation(plt.gcf(), self.update_anim, interval=1, fargs=(
             fig,), frames=self.number_frames, blit=False)
         name = str(np.random.randint(0, 1000))
         name = str(datetime.now())
@@ -220,32 +234,35 @@ class GravityField:
 
 
 field = GravityField()
-field.add_body(Body(3, 2, -0.3, -1))
+# field.add_body(Body(3, 2, -0.3, -1))
 
-field.add_body(Body(-15 ,5,-0.00001*np.cos(np.pi / 4), 0.0001*np.cos(np.pi / 4)))
-#field.add_body(Body( 6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
-#field.add_body(Body(1, 4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
-#field.add_body(Body( 5, 1, 1*np.cos(np.pi / 4), -1*np.cos(np.pi / 4)))
+# field.add_body(Body(-15 ,5,-0.00001*np.cos(np.pi / 4), 0.0001*np.cos(np.pi / 4)))
+# #field.add_body(Body( 6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
+# #field.add_body(Body(1, 4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
+# #field.add_body(Body( 5, 1, 1*np.cos(np.pi / 4), -1*np.cos(np.pi / 4)))
 
 
 
-field.run(5600, C = 0.001, number_frames=60,approx_error=1.5)
+
+
+
+for i in range(2):
+    v1 = uniform(0,360)
+    v2 = uniform(0,360)
+    x1 = uniform(-50,50)
+    x2 =uniform(-10,15)
+    m = uniform(1000,10000)
+    field.add_body(Body( x1,x2 , np.cos(np.pi*(v1/180))/10000, 0.001*np.cos(np.pi*(v1/180))/10000 ))
+
+field.add_body(Body(1, 4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
+field.add_body(Body( 5, 1, 1*np.cos(np.pi / 4), -1*np.cos(np.pi / 4)))    
+
+field.run(1000, C = 0.001, number_frames=50,approx_error=2.5)
 field.save_animation()
-
-
-# for i in range(10):
-#     v1 = uniform(0,360)
-#     v2 = uniform(0,360)
-#     x1 = uniform(-5,5)
-#     x2 =uniform(-5,5)
-#     m = uniform(1000,10000)
-#     field.add_body(Body( x1,x2 , np.cos(np.pi*(v1/180))/10000, np.cos(np.pi*(v1/180))/10000 ))
-
-
 
 #field.add_body(Body(1, 1, 0.2, 0.2))
 #
-print('Здравей')
+print('З')
 #x, y = field.result()
 
 # plt.plot(x['body_1'][0:50])
