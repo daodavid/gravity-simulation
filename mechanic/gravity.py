@@ -6,7 +6,7 @@ from IPython.display import HTML
 import numpy as np
 from datetime import datetime
 import warnings
-
+from random import *
 
 class Body:
     '''
@@ -108,9 +108,16 @@ class GravityField:
             # all delta (x_ij - x_kj) ^2
             # mutiple by mass (miss)
             devider_modul_r = np.sum(delta_r_M**2, axis=1)**(3/2)
-            if(devider_modul_r.any() < self.approx_error or devider_modul_r<elf.approx_error ):
+            
+            if( (devider_modul_r==0).any() or  (devider_modul_r < 0.5 ).any() ):
+                warnings.warn("warning ".format(devider_modul_r))
+                
+
+            if( (devider_modul_r==0).any() or  (devider_modul_r < self.approx_error ).any() ):
                 warnings.warn("delta r < approx_error ,the force is skipp ".format(self.approx_error))
-                devider_modul_r = 1
+                ##replaceee only this symbol
+                #devider_modul_r = 100000
+                devider_modul_r = 2
 
 
             g1 = 100*np.sum(delta_r_M[:, 0]*(1/devider_modul_r))
@@ -125,14 +132,6 @@ class GravityField:
 
             self._mvelocity[i][0] = self._mvelocity[i][0] + force[0]*self.h
             self._mvelocity[i][1] = self._mvelocity[i][1] + force[1]*self.h
-            if(i == 0):
-                pass
-                #  print('f_x=' + str(force[0]))
-                #  self._force = np.append(self._force,force[0])
-                #  print('v_x' + str(i) +' '+ str(self._mvelocity[i][1]))
-                #  print('x_1 :' + str(self._mcoords[i][0]))
-                #  print('y_1=' + str(self._mcoords[i+1][0]))
-                #  print('...')
 
     def save(self):
         columns = ['body_' + str(i) for i in range(self.x_cordinates[0].size)]
@@ -140,20 +139,26 @@ class GravityField:
         self.Y_cordinates = pd.DataFrame(self.y_cordinates, columns=columns)
         print('calculation complete succsefuly')
 
-    def run(self, n, number_frames=20, approx_error = 1.5):
+    def run(self, n, C = 0.1, number_frames=20, approx_error = 1):
         '''
         parametes :
         n- number of iteration
         '''
-      
+        start = datetime.now()
+
+        self.h = C 
+        print('start:' ,str(start))
         self.number_iter = n
-        self.number_frames = n  # number_frames
-        self.frame_step = 1  # int(n/number_frames)
+        self.number_frames =  number_frames
+        self.frame_step = int(n/number_frames)
         self.approx_error = approx_error 
+        self.number_of_bodies = self._mvelocity.shape[0]
         for i in range(n):
-            field.leaf_frog_step1()
-            field.leap_frog_step2()
+            self.leaf_frog_step1()
+            self.leap_frog_step2()
         self.save()
+        end =datetime.now() - start
+        print('all cal process {}'.format(end) )
 
 
     def result(self):
@@ -164,14 +169,22 @@ class GravityField:
         return ''
 
     def update_anim(self, i, arg):
+        plt.style.use('dark_background')
         x, y = self.X_cordinates, self.Y_cordinates
         ax = plt.gca()
         arg.clf()
         k = self.frame_step*i
+        n_bodies =  self.number_of_bodies
+        linewidth = 1/self.number_of_bodies
         for j in range(x.shape[1]):
+           
+            
             body = 'body_{}'.format(j)
-            plt.scatter(x[body][k], y[body][k])
-            plt.plot(np.array(x[body]), np.array(y[body]), color='blue')
+            #print(x[body][k])
+            if(self.show_trajectory) :
+                plt.plot(np.array(x[body]), np.array(y[body]),color='indigo',linewidth=linewidth)
+            plt.scatter(x[body][k], y[body][k],color='white')
+            
         #q = plt.scatter(self.X_cordinates, self.Y_cordinates, color='indigo', linewidths=None)
 
 
@@ -179,10 +192,17 @@ class GravityField:
         ax.spines['right'].set_color('none')
         ax.spines['top'].set_color('none')
 
+        #plt.scatter(0, 0, color='red', linewidths=0.0001)
+        #plt.scatter(-10, 10, color='red', linewidths=0.0001)
+        #plt.scatter(10, 10, color='red', linewidths=0.0001)
+
         # return particles
-    def save_animation(self, path=None):
+    def save_animation(self, path=None ,show_trajectory=True):
+        self.show_trajectory =show_trajectory
+
         print('saving of animation')
         fig = plt.figure(figsize=(6, 6))
+        plt.style.use('dark_background')
 
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
@@ -194,27 +214,49 @@ class GravityField:
         name = datetime.now().microsecond
         anim.save('resources/mp4/{}.mp4'.format(str(name)), writer=writer)
         HTML(anim.to_html5_video())
+\
+
+
 
 
 field = GravityField()
-#field.add_body(Body(3, 2, -0.3, -1))
+field.add_body(Body(3, 2, -0.3, -1))
+
 field.add_body(Body(-15 ,5,-0.00001*np.cos(np.pi / 4), 0.0001*np.cos(np.pi / 4)))
-field.add_body(Body( -6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
-#field.add_body(Body(-15 ,-5,+0.00001*np.cos(np.pi / 4), -0.0001*np.cos(np.pi / 4)))
-#field.add_body(Body( -6, 6,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
-#field.add_body(Body(1, 1, 0.2, 0.2))
-field.run(100)
+#field.add_body(Body( 6, -4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
+#field.add_body(Body(1, 4,1*np.cos(np.pi / 4), 1*np.cos(np.pi / 4)))
+#field.add_body(Body( 5, 1, 1*np.cos(np.pi / 4), -1*np.cos(np.pi / 4)))
+
+
+
+field.run(5600, C = 0.001, number_frames=60,approx_error=1.5)
 field.save_animation()
-x, y = field.result()
 
-plt.plot(x['body_1'][0:50])
 
-plt.plot(x['body_0'][0:50])
-# print(x['body_0'])
-plt.show()
-plt.plot(np.log(field._force[1:20]))
-plt.plot(field._force[1:20])
-plt.show()
+# for i in range(10):
+#     v1 = uniform(0,360)
+#     v2 = uniform(0,360)
+#     x1 = uniform(-5,5)
+#     x2 =uniform(-5,5)
+#     m = uniform(1000,10000)
+#     field.add_body(Body( x1,x2 , np.cos(np.pi*(v1/180))/10000, np.cos(np.pi*(v1/180))/10000 ))
+
+
+
+#field.add_body(Body(1, 1, 0.2, 0.2))
+#
+print('Здравей')
+#x, y = field.result()
+
+# plt.plot(x['body_1'][0:50])
+
+# plt.plot(x['body_0'][0:50])
+# # print(x['body_0'])
+# plt.show()
+# plt.plot(np.log(field._force[1:20]))
+# plt.plot(field._force[1:20])
+# plt.show()
+
 
 # def update_HTML_animation(X,Y):
 
