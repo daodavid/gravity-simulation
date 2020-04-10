@@ -13,6 +13,7 @@ import pandas as pd
 # common python libs
 from datetime import datetime
 import warnings
+from random import *
 
 
 class Body:
@@ -74,9 +75,9 @@ class GravityField:
         else:
             self.x_cordinates = np.array(b._mcoord[0])
             self.y_cordinates = np.array(b._mcoord[1])
-    
+
     @classmethod
-    def calculate_gravity(cls, X_i, x_kj, M_i, M_kn, g =0.001, error_value=0.01):
+    def calculate_gravity(cls, X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.01):
         ''''
         G_ik = sum_i g*(M_i.M_kn)* (r_i - r_k)/( (r_i1 - r_k1)^2 +(r_i2 - r_k2)^2 )
         G_i = S_i g.m.M(r_i - r_k)/(|r_i - r_k|^2)
@@ -141,17 +142,17 @@ class GravityField:
         #self.x1 = self.x1 + self.v1 * self.h / 2
         #self.x2 = self.x2 + self.v2 * self.h / 2
         self._mcoords = self._mcoords + self._mvelocity*(self.h/2)
-        #moment state
+        # moment state
         x = self._mcoords[:, 0]
         y = self._mcoords[:, 1]
 
-        # track cordinate in time 
+        # track cordinate in time
         if self.x_cordinates.shape == x.shape:
             self.x_cordinates = np.array([self.x_cordinates, x])
             self.y_cordinates = np.array([self.y_cordinates, y])
         else:
             self.x_cordinates = np.append(self.x_cordinates, [x], axis=0)
-            self.y_cordinates = np.append(self.y_cordinates, [y], axis=0)    
+            self.y_cordinates = np.append(self.y_cordinates, [y], axis=0)
 
     def leapFrog_step2(self):
         '''
@@ -163,10 +164,14 @@ class GravityField:
             all_codinates = np.delete(self._mcoords, i, 0)
             masses = np.delete(self._masses, i)
             force = GravityField.calculate_gravity(
-                self._mcoords[i, :], all_codinates, self._masses[i], masses,self.g, error_value=self.error)
-
-            self._mvelocity[i][0] = self._mvelocity[i][0] + force[0]*self.h
-            self._mvelocity[i][1] = self._mvelocity[i][1] + force[1]*self.h
+                self._mcoords[i, :], all_codinates, self._masses[i], masses, self.g, error_value=self.error)
+            
+            M = self._masses[i]
+            a = force/M
+            self._mvelocity[i][0] = self._mvelocity[i][0] + a[0]*self.h
+            self._mvelocity[i][1] = self._mvelocity[i][1] + a[1]*self.h
+            #v = self._mvelocity[i] + a*self.h
+            #v = v
 
     def save(self):
         columns = ['body_' + str(i) for i in range(self.x_cordinates[0].size)]
@@ -186,16 +191,15 @@ class GravityField:
         self.number_iter = n
         self.number_frames = number_frames
         self.frame_step = int(n/number_frames)
-        self.approx_error = approx_error
+        self.approx_error = 1/10**approx_error
         self.number_of_bodies = self._mvelocity.shape[0]
         self.error = approx_error
+        self.number_iteration = n 
 
+        for i in range(self.number_iteration):
+            self.leapFrog_step1()
+            self.leapFrog_step2()
 
-        for i in range(n):
-          self.leapFrog_step1()
-          self.leapFrog_step2() 
-          
-        
         self.save()
         end = datetime.now() - start
         print('all cal process {}'.format(end))
@@ -227,7 +231,7 @@ class GravityField:
         #     plt.scatter(x[body][k], y[body][k],color='white')
 
         x_plot, y_plot = X[k], Y[k]
-        plt.scatter(x_plot, y_plot, color='skyblue', s=self._masses)
+        plt.scatter(x_plot, y_plot, color='skyblue', s=self._masses/10)
         plt.plot(X, Y, color='skyblue', linewidth=linewidth)
 
         #q = plt.scatter(self.X_cordinates, self.Y_cordinates, color='indigo', linewidths=None)
@@ -242,7 +246,7 @@ class GravityField:
         self.show_trajectory = show_trajectory
         print('saving of animation')
         #fig = add_subplot(111, projection='3d')
-        fig = plt.figure(figsize=(6, 6))
+        fig = plt.figure(figsize=(10, 10))
         plt.style.use('dark_background')
 
         Writer = animation.writers['ffmpeg']
@@ -252,23 +256,54 @@ class GravityField:
             fig,), frames=self.number_frames, blit=False)
         name = str(datetime.now())
         name = datetime.now().microsecond
-        anim.save('resources/mp4/{}.mp4'.format(str(name)), writer=writer)
+        N = self._mcoords.shape[0]
+
+        anim.save('resources/mp4/bodies={},N={}.mp4'.format(N,str(name),self.number_iteration), writer=writer)
         HTML(anim.to_html5_video())
 
-    def update3D(self, i, scatters):
-        pass
 
-    def save3D(self):
-        pass
 
 
 field = GravityField()
-field.add_body(Body(1, 1, 1, 1, mass=2))
-#field.add_body(Body(1.00001, 1.00001,1 ,1,mass=2))
-
-field.add_body(Body(2, 2, 2, 2, mass=3))
-field.add_body(Body(3, 3, 3, 3, mass=1))
 
 
-field.run(5000, C=0.001, number_frames=30, approx_error=0.01)
+# field.add_body(Body(15, 6 , -np.cos(np.pi / 4)/100, 0.01*np.cos(np.pi / 4) ,mass=30))
+# field.add_body(Body(6, 6 , -np.cos(np.pi / 4)/100, 0.01*np.cos(np.pi / 4) ,mass=50))
+# field.add_body(Body(-3, 0 ,np.cos(np.pi / 4)/(10*20), np.cos(np.pi / 4)/(10*20),mass=1500))
+# field.add_body(Body(-6, -6 , -0.01*np.cos(np.pi / 4)/100, -0.001*np.cos(np.pi / 4) ,mass=60))
+# field.add_body(Body(-10, 6 , -np.cos(np.pi / 4)/100, 0.01*np.cos(np.pi / 4) ,mass=100))
+# field.add_body(Body(-19, 0 ,np.cos(np.pi / 4)/(10*20), np.cos(np.pi / 4)/(10*20),mass=100))
+# field.add_body(Body(-20, -6 , -0.01*np.cos(np.pi / 4)/100, -0.001*np.cos(np.pi / 4) ,mass=60))
+# field.add_body(Body(30, 6 , -np.cos(np.pi / 4)/100, 0.01*np.cos(np.pi / 4) ,mass=100))
+
+# field.add_body(Body(-15, -20 , np.cos(np.pi / 4)/(10**100), np.cos(np.pi / 4)/10**100 ,mass=100))
+
+for i in range(1550):
+    v = uniform(0,20)
+
+    alpha = uniform(0,360)
+    x1 = uniform(-550,700)
+    x2 = uniform(-530,500)
+    m = uniform(20,300)   
+    field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))
+
+for i in range(5):
+    v = uniform(0,0.1)
+
+    alpha = uniform(0,360)
+    x1 = uniform(-550,700)
+    x2 = uniform(-530,500)
+    m = uniform(500,5000)   
+    field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))    
+
+for i in range(3):
+    v = uniform(0,0.1)
+
+    alpha = uniform(0,360)
+    x1 = uniform(-550,700)
+    x2 = uniform(-530,500)
+    m = uniform(1000,5000)   
+    field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))        
+
+field.run(16200, C=0.01, number_frames=100, approx_error=0.000001)
 field.save_animation()
