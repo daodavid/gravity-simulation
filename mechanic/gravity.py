@@ -259,7 +259,7 @@ class GravityField:
         N = self._mcoords.shape[0]
 
         anim.save('resources/mp4/bodies={},N={}.mp4'.format(N,str(name),self.number_iteration), writer=writer)
-        HTML(anim.to_html5_video())
+        #HTML(anim.to_html5_video())
 
 
 
@@ -278,7 +278,7 @@ field = GravityField()
 
 # field.add_body(Body(-15, -20 , np.cos(np.pi / 4)/(10**100), np.cos(np.pi / 4)/10**100 ,mass=100))
 
-for i in range(1550):
+for i in range(1):
     v = uniform(0,20)
 
     alpha = uniform(0,360)
@@ -287,7 +287,7 @@ for i in range(1550):
     m = uniform(20,300)   
     field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))
 
-for i in range(5):
+for i in range(1):
     v = uniform(0,0.1)
 
     alpha = uniform(0,360)
@@ -296,7 +296,7 @@ for i in range(5):
     m = uniform(500,5000)   
     field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))    
 
-for i in range(3):
+for i in range(1):
     v = uniform(0,0.1)
 
     alpha = uniform(0,360)
@@ -305,5 +305,5 @@ for i in range(3):
     m = uniform(1000,5000)   
     field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))        
 
-field.run(16200, C=0.01, number_frames=100, approx_error=0.000001)
+field.run(200, C=0.01, number_frames=100, approx_error=0.000001)
 field.save_animation()
