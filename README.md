@@ -1,4 +1,4 @@
-# N-bodies problem
+# Barnes Hut approach 
 
 
 
@@ -7,9 +7,13 @@
 #### LINK :  <a color='blue' href="https://nbviewer.jupyter.org/github/Daodavid93/N_BODY_PROBLEM_Barnes-Hut-ALGORITAM/blob/master/n-bodies-project.ipynb">N-bodies problem and Barnes-Hut algorithm 
 </a>
 
-![](https://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/video/8-bodies.gif)
+![](https://github.com/daodavid/gravity-simulation/blob/BarnesHut_notes_and_implementatios/video/8-b.gif)
 
-![](https://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/video/3-bodies.gif)
+![](https://github.com/daodavid/gravity-simulation/blob/BarnesHut_notes_and_implementatios/video/3-bodies.gif)
 
-![alt text](https://github.com/Daodavid93/Barnes-Hut-Algorithm_Nbodies_Problem/blob/master/sources/18_1.jpg)
+![alt text](https://github.com/daodavid/gravity-simulation/blob/BarnesHut_notes_and_implementatios/sources/18_1.jpg)
+
+
+Note that !!!
+The algorithm will work well only if it is written on C#
 
