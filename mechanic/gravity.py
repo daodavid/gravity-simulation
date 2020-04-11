@@ -231,7 +231,7 @@ class GravityField:
         #     plt.scatter(x[body][k], y[body][k],color='white')
 
         x_plot, y_plot = X[k], Y[k]
-        plt.scatter(x_plot, y_plot, color='skyblue', s=self._masses/10)
+        plt.scatter(x_plot, y_plot, color='skyblue', s=self._masses/100)
         plt.plot(X, Y, color='skyblue', linewidth=linewidth)
 
         #q = plt.scatter(self.X_cordinates, self.Y_cordinates, color='indigo', linewidths=None)
@@ -278,32 +278,25 @@ field = GravityField()
 
 # field.add_body(Body(-15, -20 , np.cos(np.pi / 4)/(10**100), np.cos(np.pi / 4)/10**100 ,mass=100))
 
-for i in range(1):
-    v = uniform(0,20)
 
-    alpha = uniform(0,360)
-    x1 = uniform(-550,700)
-    x2 = uniform(-530,500)
-    m = uniform(20,300)   
-    field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))
 
-for i in range(1):
+for i in range(10):
     v = uniform(0,0.1)
 
     alpha = uniform(0,360)
-    x1 = uniform(-550,700)
-    x2 = uniform(-530,500)
-    m = uniform(500,5000)   
+    x1 = uniform(-20,200)
+    x2 = uniform(-20,200)
+    m = uniform(20,600)   
     field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))    
 
-for i in range(1):
+for i in range(2):
     v = uniform(0,0.1)
 
     alpha = uniform(0,360)
-    x1 = uniform(-550,700)
-    x2 = uniform(-530,500)
-    m = uniform(1000,5000)   
+    x1 = uniform(-20,200)
+    x2 = uniform(-20,200)
+    m = uniform(11000,15000)   
     field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))        
 
-field.run(200, C=0.01, number_frames=100, approx_error=0.000001)
+field.run(100, C=0.1, number_frames=100, approx_error=0.000001)
 field.save_animation()

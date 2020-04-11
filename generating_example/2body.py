@@ -13,5 +13,5 @@ field.add_body(Body( 5, 1, 1*np.cos(np.pi / 4), -1*np.cos(np.pi / 4)))
 
 
 
-field.run(10, C = 0.001, number_frames=10,approx_error=1.5)
+field.run(9550, C = 0.001, number_frames=100,approx_error=1.5)
 field.save_animation()
