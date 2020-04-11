@@ -1,7 +1,7 @@
 # vectorized computation
 import numpy as np
 
-#libs for visualizing
+# libs for visualizing
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 from IPython.display import HTML
@@ -16,10 +16,8 @@ from random import *
 
 
 class Body:
-    '''
-    The class constructs the particle.
-    '''
-
+    ''' The class constructs the particle'''
+   
     def __init__(self,  x0, y0, v_x, v_y, mass=30):
         '''
         Parameters:
@@ -44,9 +42,8 @@ class Body:
 
         # the moment velocity
         self._mvelocity = np.array([v_x, v_y])
-        
-        self._mass = mass
 
+        self._mass = mass
 
 
 
@@ -85,9 +82,8 @@ def calculate_gravity(X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.00001):
         when this value is aachieve the method will show RuntimeWarning
 
     Return :
-
         Sum of all  gravity forces coming from particles x_kj wich acts on particle X_i
-
+    
     '''
 
     # dr matrix contain all delta elemes [[x_i0 - x_10, x_i1 - x_i1],[...,...],[x_i0 - x_k0, x_i1- x_k1]]
@@ -95,7 +91,7 @@ def calculate_gravity(X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.00001):
     mod_dr_kj = dr_kj**2
     mod_dr_k = np.sum(mod_dr_kj, axis=1)
 
-    #when |dr| --> 0 then F--> infinity
+    # when |dr| --> 0 then F--> infinity
     if (mod_dr_k < error_value).any():
         message = '|dr|, |dr|-->0 , , there for the dr has been repalced by configured error value {}  '.format(
             error_value)
@@ -108,13 +104,46 @@ def calculate_gravity(X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.00001):
 
     G = g*M_i*M_kn*(dr_kj/mod_dr_k)
 
-    return np.sum(G, axis=0)     
+    return np.sum(G, axis=0)
 
 
 class GravityField:
 
-    '''
-      The class holds all bodies and provide its updatin in time
+    '''The class holds all bodies and provide its updatin in time.
+   
+    Args :
+      x_cordinates : keeps the evolution of all bodies coordinates on the X axis through iterations
+      y_cordinates : keeps the evolution of all bodies coordinates on the Y axis through iterations
+
+    Attributes: 
+    add_body(Body) :  adding new body on the field
+    run() :  start the process of calculation and updating of  corrdinates of Bodies
+    save_animation() : creates an animation mp4
+    
+    Example : 
+
+        field = GravityField()
+        field.add_body(Body(15, 6, -np.cos(np.pi / 4)/100,
+                        0.01*np.cos(np.pi / 4), mass=30))
+        field.add_body(Body(6, 6, -np.cos(np.pi / 4)/100,
+                        0.01*np.cos(np.pi / 4), mass=50))
+        field.add_body(Body(-3, 0, np.cos(np.pi / 4)/(10*20),
+                        np.cos(np.pi / 4)/(10*20), mass=1500))
+        field.add_body(Body(-6, -6, -0.01*np.cos(np.pi / 4) /
+                        100, -0.001*np.cos(np.pi / 4), mass=60))
+        field.add_body(Body(-10, 6, -np.cos(np.pi / 4)/100,
+                        0.01*np.cos(np.pi / 4), mass=100))
+        field.add_body(Body(-19, 0, np.cos(np.pi / 4)/(10*20),
+                        np.cos(np.pi / 4)/(10*20), mass=100))
+        field.add_body(Body(-20, -6, -0.01*np.cos(np.pi / 4) /
+                        100, -0.001*np.cos(np.pi / 4), mass=60))
+        field.add_body(Body(30, 6, -np.cos(np.pi / 4)/100,
+                        0.01*np.cos(np.pi / 4), mass=100))
+        
+        X, Y = field.run(17000, C=0.01)
+        field.save_animation(frames=80, figsize=(6, 6), reduce_size_body=5)
+
+
 
     '''
 
@@ -153,13 +182,10 @@ class GravityField:
             self.x_cordinates = np.array(b._mcoord[0])
             self.y_cordinates = np.array(b._mcoord[1])
 
-  
-
     def __leapFrog_step1(self):
-        """
-        leap frog step 1
-        x = x + v_1*self.h/2
-        """
+        """ leap frog step 1 
+            x = x + v_1*self.h/2
+         """
 
         #self.x1 = self.x1 + self.v1 * self.h / 2
         #self.x2 = self.x2 + self.v2 * self.h / 2
@@ -177,15 +203,14 @@ class GravityField:
             self.y_cordinates = np.append(self.y_cordinates, [y], axis=0)
 
     def __leapFrog_step2(self):
-        '''
-        leapFrog algorithm step 2
-        v_{1/2} = v_1 + a(x_{1/2})*h
+        '''leapFrog algorithm step 2
+           v_{1/2} = v_1 + a(x_{1/2})*h
         '''
 
         for i in range(self._mcoords.shape[0]):
             all_codinates = np.delete(self._mcoords, i, 0)
             masses = np.delete(self._masses, i)
-            force =  calculate_gravity(
+            force = calculate_gravity(
                 self._mcoords[i, :], all_codinates, self._masses[i], masses, self.g, error_value=self.error)
 
             M = self._masses[i]
@@ -195,11 +220,8 @@ class GravityField:
             #v = self._mvelocity[i] + a*self.h
             #v = v
 
-  
-
     def run(self, n, C=0.01, approx_error=0.000001):
-        '''
-        Starting point 
+        '''  Starting point 
 
         Parametes :
           n  : number
@@ -214,8 +236,9 @@ class GravityField:
           X,Y pandas data frames 
           returns the  evolution  of all coordinates 
           of X, Y in time
-              
-        '''
+
+        Еxample :
+         '''
 
         self.h = C
         self.number_iter = n
@@ -236,12 +259,12 @@ class GravityField:
 
         self.__save__()
         return self.__result__()
-    
+
     def __save__(self):
         columns = ['body_' + str(i) for i in range(self.x_cordinates[0].size)]
         self.X_cordinates = pd.DataFrame(self.x_cordinates, columns=columns)
         self.Y_cordinates = pd.DataFrame(self.y_cordinates, columns=columns)
-        print('calculation complete succsefuly')    
+        print('calculation complete succsefuly')
 
     def __result__(self):
 
@@ -265,6 +288,23 @@ class GravityField:
 
     def save_animation(self, frames=80, name=None, **kwargs):
         '''
+        Save animation in mp4
+
+        Parameters :
+          frames : int
+          the number of frames wich  will be genarated
+          name : str
+          name of the file 
+
+          **kwargs 
+            can be passed some plot settin 
+            as title ,figsize ,reduce_size_body
+
+          example :
+
+         save_animation(frames = 100 , name = 'my_animation' ,figsize=(6, 6),
+                        reduce_size_body=20,title='N body generation')
+
 
         '''
 
@@ -301,31 +341,3 @@ class GravityField:
         anim.save(name, writer=writer)
         print('end rendering {}'.format(datetime.now()))
         # HTML(anim.to_html5_video())  ### for notebooks
-
-
-field = GravityField()
-
-
-field.add_body(Body(15, 6, -np.cos(np.pi / 4)/100,
-                    0.01*np.cos(np.pi / 4), mass=30))
-field.add_body(Body(6, 6, -np.cos(np.pi / 4)/100,
-                    0.01*np.cos(np.pi / 4), mass=50))
-field.add_body(Body(-3, 0, np.cos(np.pi / 4)/(10*20),
-                    np.cos(np.pi / 4)/(10*20), mass=1500))
-field.add_body(Body(-6, -6, -0.01*np.cos(np.pi / 4) /
-                    100, -0.001*np.cos(np.pi / 4), mass=60))
-field.add_body(Body(-10, 6, -np.cos(np.pi / 4)/100,
-                    0.01*np.cos(np.pi / 4), mass=100))
-field.add_body(Body(-19, 0, np.cos(np.pi / 4)/(10*20),
-                    np.cos(np.pi / 4)/(10*20), mass=100))
-field.add_body(Body(-20, -6, -0.01*np.cos(np.pi / 4) /
-                    100, -0.001*np.cos(np.pi / 4), mass=60))
-field.add_body(Body(30, 6, -np.cos(np.pi / 4)/100,
-                    0.01*np.cos(np.pi / 4), mass=100))
-
-
-a,b = field.run(17000, C=0.01)
-field.save_animation(frames=80, figsize=(6, 6), reduce_size_body=5)
-
-
-print(a)
