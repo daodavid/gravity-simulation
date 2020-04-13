@@ -14,9 +14,27 @@
   <img height="500" width="500" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/201-b.gif">    
   <img height="500" width="500" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/2550-examples.gif"> 
   <br> <br>   
-  <h3>Installation : </h> <br>
-  git clone <br>
-  pip install . <br>
+  
+Installation : 
+```
+git clone 
+pip install .
+
+```  
+Example : 
+
+```
+#random example together with one body bigger mass than others
+from gravity_simulation.gravity import *
+
+field.generate_random(15, mass=[20, 500], r=[-5, 5], velocity=[-5, 5], alpha=[0, 360])
+field.add_body(Body(x0=0, y0=0,v_x=0, v_y=0, mass = 3000))
+
+field.run(1300, C=0.01)
+field.save_animation(frames=50,name='my_example',reduce_size_body=50,frames=150)
+
+```
+  
 
 <br> <br>
 <h5 size="2" id="int-1" style="margin-right: 45px; margin-left: 45px">
