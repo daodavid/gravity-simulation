@@ -15,13 +15,13 @@
   <img height="500" width="500" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/2550-examples.gif"> 
   <br> <br>   
   
-## Installation : 
+### Installing : 
 ```
 git clone 
 pip install .
 
 ```  
-## Example : 
+### Example : 
 
 ```
 #random example together with one body bigger mass than others
