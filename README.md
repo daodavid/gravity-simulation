@@ -5,8 +5,8 @@
   
 <br> <br>
        
-   <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-7.gif">
-  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-11.gif"> 
+   <img height="300" width="300" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-7.gif">
+  <img height="300" width="300" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-11.gif"> 
  <br> <br>
   <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-16.gif">    
   <IMG height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-100.gif"> 
