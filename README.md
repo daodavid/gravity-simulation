@@ -1,17 +1,17 @@
 
-<h1>gravity-simulation-API </h1>
-<h3  face = "Times New Roma" color='#270336'  >
-  API for  calculation of N-bodies interaction under the gravity force.
+<h1  "Times New Roma" color='#270336' >API for  calculation of N-bodies interaction under the gravity force.</h1>
+
+  
 <br> <br>
        
-   <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/b-7.gif">
-  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/b-11.gif"> 
+   <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-7.gif">
+  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-11.gif"> 
  <br> <br>
-  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/b-16.gif">    
+  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/b-16.gif">    
   <IMG height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/b-100.gif"> 
   <br> <br>
-  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/201-b.gif">    
-  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/2550-examples.gif"> 
+  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/201-b.gif">    
+  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation-api/resources/gift-generated-examples/2550-examples.gif"> 
   <br> <br>   
   <h3>Installation : </h>
   git clone <br>
