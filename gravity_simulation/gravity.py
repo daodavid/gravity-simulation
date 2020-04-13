@@ -1,5 +1,7 @@
 # vectorized computation
 import numpy as np
+from numba import  float64,int64,f8,float32
+from numba import guvectorize
 
 # libs for visualizing
 import matplotlib.pyplot as plt
@@ -13,6 +15,9 @@ import pandas as pd
 from datetime import datetime
 import warnings
 from random import *
+
+from numba import jit
+
 
 
 class Body:
@@ -47,7 +52,7 @@ class Body:
 
 
 
-def calculate_gravity(X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.00001):
+def gravity_force(X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.00001):
     ''''
     G_ik = sum_i g*(M_i.M_kn)* (r_i - r_k)/( (r_i1 - r_k1)^2 +(r_i2 - r_k2)^2 )
     G_i = S_i g.m.M(r_i - r_k)/(|r_i - r_k|^2)
@@ -85,27 +90,82 @@ def calculate_gravity(X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.00001):
         Sum of all  gravity forces coming from particles x_kj wich acts on particle X_i
     
     '''
-
+    #prevent calculation of force of body respect to itself
+    index1,index2 =  np.where( x_kj[:,0]==X_i[0] )[0] ,np.where(x_kj[:,1]==X_i[1] )[0]
+    if ((index1 == index2).any()):
+         x_kj = np.delete(x_kj, index1,axis=0)
+         M_kn = np.delete(M_kn,index1)
+    
     # dr matrix contain all delta elemes [[x_i0 - x_10, x_i1 - x_i1],[...,...],[x_i0 - x_k0, x_i1- x_k1]]
     dr_kj = x_kj - X_i  #
-    mod_dr_kj = dr_kj**2
+    # return [(x_i0-x_k0)^2,(x_i1-x_k1)^2] 
+    mod_dr_kj = dr_kj**2 
+    #return [sum_k (x_i0-x_k0)^2, sum_k (x_i1-x_k1)^2]
     mod_dr_k = np.sum(mod_dr_kj, axis=1)
+    
 
     # when |dr| --> 0 then F--> infinity
+    error_value = 0.0000001
     if (mod_dr_k < error_value).any():
         message = '|dr|, |dr|-->0 , , there for the dr has been repalced by configured error value {}  '.format(
             error_value)
         mod_dr_k[mod_dr_k < error_value] = error_value
-        warnings.showwarning(
+        if x_kj.shape[0] > 2 :
+            warnings.showwarning(
             message, filename='gravity.py', lineno=135, category=RuntimeWarning)
 
     mod_dr_k = mod_dr_k.reshape(-1, 1)
     M_kn = M_kn.reshape(-1, 1)
 
     G = g*M_i*M_kn*(dr_kj/mod_dr_k)
+    sum_force = np.sum(G, axis=0)
+    return sum_force
 
-    return np.sum(G, axis=0)
 
+@guvectorize(["float64[:, :],  float64[:] ,float64[:, :]"], "(n, m), (n) -> (n, m)",nopython=False,fastmath=True,forceobj=True)
+#@guvectorize(["float64[:, :],  float64[:] ,float64[:, :]"], "(n, m), (n) -> (n, m)",target='cuda',nopython=True)
+def acc(x_ij, M_i ,out = None):
+    #G = 6.674×10−8
+    G =0.01
+    n = x_ij.shape[0]
+    
+    #if (n,)==M_i.shape:
+        #M_i = M_i.reshape(-1,1)
+        #print(M_i.shape)
+
+
+    for i in range(x_ij.shape[0]):
+        acc = 0
+        #sepate particles
+        X_i = x_ij[i]
+        x_kj = np.delete(x_ij, i ,axis=0)
+        m = M_i[i]
+        m_k = np.delete(M_i,i).reshape(-1,1)
+        
+        # dr matrix contain all delta elemenets [[x_i0 - x_10, x_i1 - x_i1],[...,...],[x_i0 - x_k0, x_i1- x_k1]]
+        dr_kj = x_kj - X_i  
+
+        # [(x_i0-x_k0)^2,(x_i1-x_k1)^2] 
+        mod_dr_kj = dr_kj**2 
+        #[sum_k (x_i0-x_k0)^2, sum_k (x_i1-x_k1)^2]
+        mod_dr_k = np.sum(mod_dr_kj, axis=1)
+
+        # when |dr| --> 0 then F--> infinity
+        error_value = 0.0000001
+        if (mod_dr_k < error_value).any():
+             message = '|dr|, |dr|-->0 , , there for the dr has been repalced by configured error value {}  '.format(error_value)
+             mod_dr_k[mod_dr_k < error_value] = error_value
+             print(message)
+ 
+        #if x_kj.shape[0] > 2 :
+            #warnings.showwarning(
+            #message, filename='gravity.py', lineno=135, category=RuntimeWarning)
+        
+        mod_dr_k = mod_dr_k.reshape(-1, 1)
+        #M_kn = M_kn.reshape(-1, 1)
+        F = G*m*m_k*(dr_kj/mod_dr_k)
+      
+        out[i] = np.sum(F, axis=0)*(1/m)
 
 class GravityField:
 
@@ -142,8 +202,6 @@ class GravityField:
         
         X, Y = field.run(17000, C=0.01)
         field.save_animation(frames=80, figsize=(6, 6), reduce_size_body=5)
-
-
 
     '''
 
@@ -194,7 +252,7 @@ class GravityField:
         x = self._mcoords[:, 0]
         y = self._mcoords[:, 1]
 
-        # track cordinate in time
+        # insert new cordinates
         if self.x_cordinates.shape == x.shape:
             self.x_cordinates = np.array([self.x_cordinates, x])
             self.y_cordinates = np.array([self.y_cordinates, y])
@@ -206,21 +264,34 @@ class GravityField:
         '''leapFrog algorithm step 2
            v_{1/2} = v_1 + a(x_{1/2})*h
         '''
+        # v =  self._mvelocity
+        # start = datetime.now()
+        # for i in range(self._mcoords.shape[0]):
+        #     all_codinates = np.delete(self._mcoords, i, 0)
+        #     masses = np.delete(self._masses, i)
+        #     force = gravity_force(
+        #         self._mcoords[i, :], all_codinates, self._masses[i], masses, self.g, error_value=self.error)
+        #     M = self._masses[i]
+        #     a = force/M
+        #     self._mvelocity[i][0] = self._mvelocity[i][0] + a[0]*self.h
+        #     self._mvelocity[i][1] = self._mvelocity[i][1] + a[1]*self.h
+        # print('time normal {}'.format(datetime.now()-start))
+        # force  = np.vectorize(gravity_force,signature='(i),(k,j),(),(m_i),(),()->(i)')    
+        # #start = datetime.now()
+        #fources = force(self._mcoords, self._mcoords, self._masses, self._masses, self.g, error_value=self.error)
+        #print('time old {}'.format(datetime.now()-start))
+        #M = self._masses.reshape(-1, 1)
+        #start = datetime.now()
+       
+        #out = np.ones(self._mcoords.shape)
+        a = acc(self._mcoords,self._masses)
+        self._mvelocity  = self._mvelocity + a*self.h
+        
+       
+      
+            
 
-        for i in range(self._mcoords.shape[0]):
-            all_codinates = np.delete(self._mcoords, i, 0)
-            masses = np.delete(self._masses, i)
-            force = calculate_gravity(
-                self._mcoords[i, :], all_codinates, self._masses[i], masses, self.g, error_value=self.error)
-
-            M = self._masses[i]
-            a = force/M
-            self._mvelocity[i][0] = self._mvelocity[i][0] + a[0]*self.h
-            self._mvelocity[i][1] = self._mvelocity[i][1] + a[1]*self.h
-            #v = self._mvelocity[i] + a*self.h
-            #v = v
-
-    def run(self, n, C=0.01, approx_error=0.000001):
+    def run(self, n, C=0.01, approx_error=0.00001):
         '''  Starting point 
 
         Parametes :
@@ -244,7 +315,7 @@ class GravityField:
         self.number_iter = n
         #self.number_frames = number_frames
         #self.frame_step = int(n/number_frames)
-        self.approx_error = 1/10**approx_error
+        self.approx_error = approx_error 
         self.number_of_bodies = self._mvelocity.shape[0]
         self.error = approx_error
         self.number_iteration = n
@@ -293,6 +364,7 @@ class GravityField:
         Parameters :
           frames : int
           the number of frames wich  will be genarated
+
           name : str
           name of the file 
 
@@ -341,3 +413,20 @@ class GravityField:
         anim.save(name, writer=writer)
         print('end rendering {}'.format(datetime.now()))
         # HTML(anim.to_html5_video())  ### for notebooks
+field = GravityField()
+field.add_body(Body(1, 1, 1, 1, mass=1))
+field.add_body(Body(2, 2, 2, 2, mass=2))
+field.add_body(Body(3, 3, 3, 3, mass=3))
+field.add_body(Body(5, 5, 5, 5, mass=4))
+
+# for i in range(10):
+#     v = uniform(0,0.1)
+
+#     alpha = uniform(0,360)
+#     x1 = uniform(-20,200)
+#     x2 = uniform(-20,200)
+#     m = uniform(20,600)   
+#     field.add_body(Body(x1, x2 , -v*np.cos((alpha/360)*np.pi / 4)/100, v*np.sin((alpha/360)*np.pi) ,mass=m))   
+
+
+X, Y = field.run(3, C=0.01)

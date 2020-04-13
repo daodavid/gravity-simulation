@@ -37,11 +37,6 @@ Attributes:
    gravity.Body : class
    gravity.calculate_gravity :method 
 
-
-Todo:
-    
-
-   GIT :
    https://github.com/daodavid/gravity-simulation
 
 """
