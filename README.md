@@ -13,7 +13,7 @@
   <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/201-b.gif">    
   <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/2550-examples.gif"> 
   <br> <br>   
-  <h2>Instalation </h2>
+  <h3>Installation : </h>
   git clone <br>
   pip install . <br>
 
@@ -29,5 +29,5 @@
   
 
 
-<h2>Barnes-Hut approach</h2>h
+<h4>Barnes-Hut approach</h4>h
 <a href='https://github.com/daodavid/gravity-simulation/blob/BarnesHut_notes_and_implementatios/README.md'>Barnes Hut notes, implementation in progress, and some examples </a>
