@@ -4,14 +4,14 @@
   API for  calculation of N-bodies interaction under the gravity force.
 <br> <br>
        
-   <img height="400" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-7.gif">
-  <img height="400" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-11.gif"> 
+   <img height="400" width="400" src="/gravity-simulation/resources/gift-generated-examples/b-7.gif">
+  <img height="400" width="400" src="https://github.com/daodavid/gravity-simulation/resources/gift-generated-examples/b-11.gif"> 
  <br> <br>
-  <img height="400" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-16.gif">    
-  <IMG height="400" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-100.gif"> 
+  <img height="400" width="400" src="https://github.com/daodavid/gravity-simulation/resources/gift-generated-examples/b-16.gif">    
+  <IMG height="400" width="400" src="https://github.com/daodavid/gravity-simulation/resources/gift-generated-examples/b-100.gif"> 
   <br> <br>
-  <img height="400" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/201-b.gif">    
-  <img height="400" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/2550-examples.gif"> 
+  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/201-b.gif">    
+  <img height="400" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/2550-examples.gif"> 
   <br> <br>   
   <h2>Instalation </h2>
   git clone <br>
