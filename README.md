@@ -1,6 +1,6 @@
 
 <h1>Gravity simulation </h1>
-<h2>  "Times New Roma" color='#270336' >API for  calculation of N-bodies interaction under  the influence of  Gravity force.</h2>
+<h2 color='#270336' >API for  calculation of N-bodies interaction under  the influence of  Gravity force.</h2>
 
   
 <br> <br>
