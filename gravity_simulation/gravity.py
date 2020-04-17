@@ -404,17 +404,17 @@ class GravityField:
             x1 = np.random.randint(r[0],r[1])
             x2 = np.random.randint(r[0],r[1])
             m = np.random.randint(mass[0],mass[1])
-            field.add_body(Body(x1, x2 , v*np.cos((a/360)*np.pi / 4)/100, v*np.sin((a/360)*np.pi) ,mass=m))
+            self.add_body(Body(x1, x2 , v*np.cos((a/360)*np.pi / 4)/100, v*np.sin((a/360)*np.pi) ,mass=m))
 
 
 
-field = GravityField()
-# v = (0,10)
-# print(v[1])
-field.generate_random(15,mass=[100,500],r = [-5,5])
-field.add_body(Body(x0=0,y0=0,v_x=0,v_y=0,mass = 3000))
+# field = GravityField()
+# # v = (0,10)
+# # print(v[1])
+# field.generate_random(15,mass=[100,500],r = [-5,5])
+# field.add_body(Body(x0=0,y0=0,v_x=0,v_y=0,mass = 3000))
 
-v = [1,10]
-v = np.random.randint(v[0],v[1])
-field.run(1300,C = 0.01)
-field.save_animation(reduce_size_body=50,frames=150)
+# v = [1,10]
+# v = np.random.randint(v[0],v[1])
+# field.run(1300,C = 0.01)
+# field.save_animation(reduce_size_body=50,frames=150)
