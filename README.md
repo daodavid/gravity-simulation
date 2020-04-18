@@ -17,8 +17,7 @@
   
 ### Installing : 
 ```
-git clone 
-pip install .
+pip install gravity-simulation==1.0.0
 
 ```  
 ### Example : 
