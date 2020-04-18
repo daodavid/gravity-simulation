@@ -1,6 +1,6 @@
 
 # Gravity simulation 
-### Python module  for calculation and simulation of n-bodies interaction. for  calculation of N-bodies interaction under  the influence of  Gravity force.
+### Python module  for calculation and simulation of n-bodies interaction  under  the influence of  Gravity force.
 
   
 <br> <br>
