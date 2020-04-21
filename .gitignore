@@ -2,3 +2,5 @@
 .ipynb_checkpoints
 resources/video/
 /__pycache__/
+dist
+build
