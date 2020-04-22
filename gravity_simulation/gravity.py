@@ -3,7 +3,7 @@ import numpy as np
 from numba import float64, int64, f8, float32
 from numba import guvectorize
 
-# libs for visualizing
+# visualizing
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 from IPython.display import HTML
@@ -11,7 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d.axes3d as p3
 import pandas as pd
 
-# common python libs
+# common python 
 from datetime import datetime
 import warnings
 from random import *
@@ -121,11 +121,10 @@ def gravity_force(X_i, x_kj, M_i, M_kn, g=0.001, error_value=0.00001):
     return sum_force
 
 
-@guvectorize(["float64[:, :],  float64[:] ,float64[:, :]"], "(n, m), (n) -> (n, m)", nopython=False, fastmath=True, forceobj=True)
-# @guvectorize(["float64[:, :],  float64[:] ,float64[:, :]"], "(n, m), (n) -> (n, m)",target='cuda',nopython=True)
+@guvectorize(["float64[:, :],  float64[:] ,float64[:, :]"], "(n, m), (n) ,() -> (n, m)", nopython=False, fastmath=True, forceobj=True)
 def acc(x_ij, M_i, out=None):
     # G = 6.674×10−8
-    G = 0.01
+    G = 0.1
     n = x_ij.shape[0]
 
     # if (n,)==M_i.shape:
@@ -301,8 +300,8 @@ class GravityField:
         for i in range(self.number_iteration):
             self.__leapFrog_step1()
             self.__leapFrog_step2()
-             
-            #print out progress bar 
+
+            #print out progress bar
             p = ((i+1)/self.number_iteration)*100
             sys.stdout.write("\r%d%%" % p)
             sys.stdout.flush()
@@ -329,12 +328,12 @@ class GravityField:
         linewidth = 1/self.number_of_bodies
 
         X, Y = self.x_cordinates, self.y_cordinates
-
-        c = self.reduce_size_body
+			
+        body_size = self.size_body*self._masses/self.number_of_bodies
 
         x_plot, y_plot = X[k], Y[k]
-        plt.scatter(x_plot, y_plot, color='skyblue', s=self._masses/c)
-        plt.plot(X, Y, color='skyblue', linewidth=linewidth)
+        plt.scatter(x_plot, y_plot, color='skyblue', s=body_size)
+        #plt.plot(X, Y, color='skyblue', linewidth=linewidth)
         title = plt.title(self.title)
         plt.setp(title, color='skyblue')
 
@@ -364,15 +363,15 @@ class GravityField:
         N = self._mcoords.shape[0]
         self.title = 'gravity simulation number of bodies = {}'.format(N)
         self.show_trajectory = True
-        self.reduce_size_body = 30
+        self.size_body = 10
         figsize = (6, 6)
         for key, value in kwargs.items():
             if key == 'title':
                 self.title = value
             elif key == 'figsize':
                 figsize = value
-            elif key == 'reduce_size_body':
-                self.reduce_size_body = value
+            elif key == 'size_body':
+                self.size_body = value
 
         fig = plt.figure(figsize=figsize)
         plt.style.use('dark_background')
@@ -387,7 +386,8 @@ class GravityField:
 
         if name is None:
             random_name = str(np.random.randint(0, 100))
-            name = ('exm.{} ,b_{}, itr={}').format(random_name, N, self.number_iteration)
+            name = ('exm.{} ,b_{}, itr={}').format(
+                random_name, N, self.number_iteration)
 
         name = name+'.mp4'
         print('start rendering {}'.format(datetime.now()))
@@ -395,17 +395,17 @@ class GravityField:
         print('end rendering {}'.format(datetime.now()))
         # HTML(anim.to_html5_video())  ### for notebooks
 
-    def generate_random(self, N_bodies, mass=[20, 500], r=[-5, 5], velocity=[-5, 5], alpha=[0, 360]):
+    def generate_random(self, N_bodies, mass=[20, 500], r_x=[-5, 5],r_y=[-5, 5],r_0=0, velocity=[-5, 5], alpha=[0, 360]):
         for i in range(N_bodies):
-         
-            #pass
-            v = np.random.randint(velocity[0],velocity[1])
-            a =np.random.randint(alpha[0],alpha[1])
-            x1 = np.random.randint(r[0],r[1])
-            x2 = np.random.randint(r[0],r[1])
-            m = np.random.randint(mass[0],mass[1])
-            self.add_body(Body(x1, x2 , v*np.cos((a/360)*np.pi / 4)/100, v*np.sin((a/360)*np.pi) ,mass=m))
 
+            #pass
+            v = np.random.randint(velocity[0], velocity[1])
+            a = np.random.randint(alpha[0], alpha[1])
+            radius_x = np.random.randint(r_x[0], r_x[1])
+            radius_y = np.random.randint(r_y[0], r_y[1])
+            m = np.random.randint(mass[0], mass[1])
+            self.add_body(Body(r_0 + radius_x*np.cos((a/360)*2*np.pi),r_0+ radius_y*np.sin((a/360)*2*np.pi)
+                              , v*np.cos((a/360)*2*np.pi), v*np.sin((a/360)*2*np.pi), mass=m))
 
 
 # field = GravityField()
@@ -413,8 +413,28 @@ class GravityField:
 # # print(v[1])
 # field.generate_random(15,mass=[100,500],r = [-5,5])
 # field.add_body(Body(x0=0,y0=0,v_x=0,v_y=0,mass = 3000))
-
 # v = [1,10]
 # v = np.random.randint(v[0],v[1])
 # field.run(1300,C = 0.01)
 # field.save_animation(reduce_size_body=50,frames=150)
+field = GravityField()
+
+
+field.generate_random(2000, mass=[100, 900], r_x=[0, 2000], r_y=[0, 6000], r_0=-1000, alpha=[0, 360],velocity=[0,500])
+field.add_body(Body(x0=0,y0=0,v_x=100,v_y=100,mass=9999))
+
+
+field.generate_random(2000, mass=[100, 900], r_x=[0, 1000], r_y=[0, 6000], alpha=[0, 360],r_0=19000,velocity=[0,500])
+field.add_body(Body(x0=1000,y0=1000,v_x=100,v_y=100,mass=9999))
+
+
+
+
+#field.generate_random(2100, mass=[1000, 2000], r_x=[-500, 2000], r_y=[-1000, 0],r_0=15000,velocity=[0,1500], alpha=[0, 360])
+
+
+
+
+
+field.run(4000, C=0.1)
+field.save_animation( frames=150, title='galaxy',size_body=5)  #size_body=100
