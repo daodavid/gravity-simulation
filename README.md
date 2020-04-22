@@ -25,8 +25,9 @@ field.add_body(Body(x0=0, y0=0,v_x=0, v_y=0, mass = 3000))
 
 field.run(1300, C=0.01)
 field.save_animation(frames=50,name='my_example',reduce_size_body=50,frames=150)
-[more ... ](https://github.com/daodavid/gravity-simulation/tree/gh-pages/examples)
+
 ```
+[more ... ](https://github.com/daodavid/gravity-simulation/tree/gh-pages/examples)
 ### Docs
 in progress
 
