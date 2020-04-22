@@ -4,8 +4,8 @@
 
   
 <br> <br>
-  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/galaxy-2g.gif">
-  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-7.gif">
+  <img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/galaxy-2g.gif">
+  <img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/b-7.gif">
   
   <br> <br>   
   
@@ -32,14 +32,14 @@ field.save_animation(frames=50,name='my_example',reduce_size_body=50,frames=150)
 in progress
 
 <br> <br> 
- <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/b_3502.gif">
-  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/g-22.gif">
+ <img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/new-gift/b_3502.gif">
+  <img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/new-gift/g-22.gif">
  <br> <br>
-  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-16.gif">
-  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-11.gif">  
+  <img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/b-16.gif">
+  <img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/gift-generated-examples/b-11.gif">  
 <br> <br>
-<img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/ex49.gif">
-<img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/2b-1.gif">
+<img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/new-gift/ex49.gif">
+<img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/new-gift/2b-1.gif">
 
 <br> <br>
 
