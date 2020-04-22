@@ -7,7 +7,7 @@ print(long_description)
 #https://www.codementor.io/@ajayagrawal295/how-to-publish-your-own-python-package-12tbhi20tf
 setuptools.setup(
    name="gravity-simulation",
-   version="1.0.0",
+   version="2.0.1",
    description ="calculation and visualization of n-bodies gravity",
    long_description=long_description,
    long_description_content_type="text/markdown",
