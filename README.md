@@ -11,7 +11,7 @@
   
 ### Installing : 
 ```
-pip install gravity-simulation==1.0.0
+pip install gravity-simulation==1.1.1
 
 ```  
 ### Example : 
