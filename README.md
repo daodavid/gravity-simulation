@@ -32,15 +32,17 @@ in progress
 
 <br> <br> 
  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/b_3502.gif">
-  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-100.gif">
+  <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/g-22.gif">
  <br> <br>
   <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-16.gif">
   <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/gift-generated-examples/b-11.gif">  
 <br> <br>
 <img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/ex49.gif">
+<img height="500" width="400" src="https://github.com/daodavid/gravity-simulation/blob/gh-pages/resources/new-gift/2b-1.gif">
 
+<br> <br>
 
-    ##### My personal opinion is that the  Nympy is an incredible library and without it, The Python is nothing (just an easy programming language and so on), but with the Numpy, The  Python is able to solve serious processes involved a huge number of iterations. When the application was written in common Python then the results were quite bad, for example, when the number of bodies is 2000 and number of the iterations is  10000 the duration of the process takes about 2 days because of the app was useless now when the processes are vectorized with <mark>NumPy</mark> and <mark>Numba</mark> the execution time takes about 2 hours.
+##### My personal opinion is that the  Nympy is an incredible library and without it, The Python is nothing (just an easy programming language and so on), but with the Numpy, The  Python is able to solve serious processes involved a huge number of iterations. When the application was written in common Python then the results were quite bad, for example, when the number of bodies is 2000 and number of the iterations is  10000 the duration of the process takes about 2 days because of the app was useless now when the processes are vectorized with <mark>NumPy</mark> and <mark>Numba</mark> the execution time takes about 2 hours.
 
     
  
