@@ -28,8 +28,8 @@ field.save_animation(frames=50,name='my_example',reduce_size_body=50,frames=150)
 
 ```
 [more ... ](https://github.com/daodavid/gravity-simulation/tree/gh-pages/examples)
-### Docs
-in progress
+### Docs (https://github.com/daodavid/gravity-simulation/tree/gh-pages/docs)
+
 
 <br> <br> 
  <img height="500" width="400" src="https://daodavid.github.io/gravity-simulation/resources/new-gift/b_3502.gif">
