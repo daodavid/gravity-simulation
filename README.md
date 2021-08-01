@@ -27,8 +27,8 @@ field.run(1300, C=0.01)
 field.save_animation(frames=50,name='my_example',reduce_size_body=50,frames=150)
 
 ```
-[more ... ](https://github.com/daodavid/gravity-simulation/tree/gh-pages/examples)
-[Docs](https://github.com/daodavid/gravity-simulation/tree/gh-pages/docs)
+[more ... ](https://github.com/daodavid/gravity-simulation/tree/gh-pages/examples) <br>
+[Documentation](https://github.com/daodavid/gravity-simulation/tree/gh-pages//docs)
 
 
 <br> <br> 
