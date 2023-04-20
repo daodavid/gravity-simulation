@@ -43,7 +43,7 @@ field.save_animation(frames=50,name='my_example',reduce_size_body=50,frames=150)
 
 <br> <br>
 
-##### My personal opinion is that the  Nympy is an incredible library and without it, The Python is nothing (just an easy programming language and so on), but with the Numpy, The  Python is able to solve serious processes involved a huge number of iterations. When the application was written in common Python then the results were quite bad, for example, when the number of bodies is 2000 and number of the iterations is  10000 the duration of the process takes about 2 days because of the app was useless now when the processes are vectorized with <mark>NumPy</mark> and <mark>Numba</mark> the execution time takes about 2 hours.
+#####  Nympy is an incredible library and without it, The Python is nothing (just an easy programming language and so on), but with the Numpy, The  Python is able to solve serious processes involved a huge number of iterations. When the application was written in common Python then the results were quite bad, for example, when the number of bodies is 2000 and number of the iterations is  10000 the duration of the process takes about 2 days because of the app was useless now when the processes are vectorized with <mark>NumPy</mark> and <mark>Numba</mark> the execution time takes about 2 hours.
 
     
  
